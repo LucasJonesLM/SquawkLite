@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+{% for u in users %}
+<div>
+    <ul>
+        <li>User Name: {{u.userName}}</li>
+        <li>Password: {{u.password}}</li>
+        <li>Email: {{u.email}}</li>
+    </ul>
+</div>
+{% endfor %}
+
+
+
+
+</body>
+</html>
