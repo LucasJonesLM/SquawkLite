@@ -2,6 +2,8 @@ package squawk;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
+import static spark.Spark.post;
+
 import java.util.ArrayList;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -22,15 +24,12 @@ public class RunSquawk {
             return template.render(model);
         });
 		
-		get("/createUser", (req, res) -> {
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/newUserTemplate.txt");
-			JtwigModel model = JtwigModel.newModel();
+		post("/createUser", (req, res) -> {
+			
 			System.out.println("request made");
 			users.add(new SquawkUser(req.queryParams("userName"),
 					req.queryParams("password"), req.queryParams("email")));
-
-			return template.render(model);
-
+			return users.toString();
 		});
 		
 		get("/create", (req, res) -> {
@@ -41,6 +40,8 @@ public class RunSquawk {
 			return template.render(model);
 
 		});
+		
+		
 
 	}
 
