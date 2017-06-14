@@ -1,12 +1,21 @@
 package squawk;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import static spark.Spark.*;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
 import java.util.ArrayList;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
+
 
 public class RunSquawk {
 
@@ -24,16 +33,17 @@ public class RunSquawk {
             return template.render(model);
         });
 		
-		post("/createUser", (req, res) -> {
-			
+
+		get("/createUser", (req, res) -> {
 			System.out.println("request made");
 			users.add(new SquawkUser(req.queryParams("userName"),
 					req.queryParams("password"), req.queryParams("email")));
 			return users.toString();
 		});
+			 
 		
 		get("/create", (req, res) -> {
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/newUserTemplate.txt");
+			JtwigTemplate template = JtwigTemplate.classpathTemplate("/NewUserForm.html");
 			JtwigModel model = JtwigModel.newModel();
 			System.out.println("request made");
 			
@@ -44,5 +54,8 @@ public class RunSquawk {
 		
 
 	}
+
+
+
 
 }
