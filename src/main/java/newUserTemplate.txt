@@ -27,7 +27,7 @@
 </form>
 <div id="userWarning">
 </div>
- <button id="ajax_button">AJAX</button>
+ <button id="ajax_button">Create User</button>
 </body>
 <script>
 // AJAX posting x-www-form-urlencoded
@@ -37,40 +37,41 @@ button.onclick = function () {
     xhr.open('POST', '/createUser');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-        if (xhr.responseText) {
-            window.location.assign("localhost:3000/");
+    	console.log(xhr.responseText);
+        if (xhr.responseText === "Yes") {
+        	window.location.href = "http://localhost:3000/";
         } else {
         	var userWarning = document.getElementById('userWarning');
         	userWarning.innerHTML = "User Name already exists.  Please create a different User Name.";
-            alert("User already exists");
+            
         }
     };
     var first = document.getElementById('userName').value;
     var second = document.getElementById('password').value;
     var second = document.getElementById('email').value;
     var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(second);
-    console.log(body);
+   // console.log(body);
     xhr.send(body);
 };
 
-// AJAX posting json
-var cat_button = document.getElementById('cat_button');
-cat_button.onclick = function () {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/jsonpost');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            console.log(xhr.responseText);
-         //   var result = document.getElementById('result');
-         //   result.innerHTML = xhr.responseText;
-            
-        } else if (xhr.status !== 200) {
-            alert('Request failed.  Returned status of ' + xhr.status);
-        }
-    };
-    var cat = {name:"tiger", age: 4};
-    xhr.send(JSON.stringify(cat));
-};
+// // AJAX posting json
+// var cat_button = document.getElementById('cat_button');
+// cat_button.onclick = function () {
+//     var xhr = new XMLHttpRequest();
+//     xhr.open('POST', '/jsonpost');
+//     xhr.setRequestHeader('Content-Type', 'application/json');
+//     xhr.onload = function() {
+//         if (xhr.status === 200) {
+//             console.log(xhr.responseText);
+//          //   var result = document.getElementById('result');
+//          //   result.innerHTML = xhr.responseText;
+// 
+//         } else if (xhr.status !== 200) {
+//             alert('Request failed.  Returned status of ' + xhr.status);
+//         }
+//     };
+//     var cat = {name:"tiger", age: 4};
+//     xhr.send(JSON.stringify(cat));
+// };
 </script>
 </html>
