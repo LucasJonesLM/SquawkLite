@@ -63,10 +63,22 @@ span.psw {
        width: 100%;
     }
 }
+
+body {
+    margin: 0 auto;
+    width: 50%;
+  }
+    h2 {
+    text-align: center;
+    color: #58D68D;
+    text-shadow: 3px 2px #DAF7A6;
+  }
 </style>
 <body>
 
-<h2>SQUAWK Existing User Form</h2>
+
+<h2>SQUAWK Login</h2>
+<p id="displayDT"></p>
 
 <form action="/action_page.php">
   <div class="imgcontainer">
@@ -88,6 +100,8 @@ span.psw {
     <button type="button" onclick="NewUserForm" class="redirect">Not a Member Yet? Click Here!</button>
   </div>
 </form>
-
+<script type="text/javascript">
+    document.getElementById("displayDT").innerHTML = Date();
+  </script>
 </body>
 </html>

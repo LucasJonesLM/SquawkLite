@@ -63,10 +63,21 @@ span.psw {
        width: 100%;
     }
 }
+
+  body {
+    margin: 0 auto;
+    width: 50%;
+  }
+ 	h2 {
+    text-align: center;
+    color: #58D68D;
+    text-shadow: 3px 2px #DAF7A6;
+  }
 </style>
 <body>
 
 <h2>SQUAWK New User Form</h2>
+<p id="displayDT"></p>
 
 <form action="/createUser" method="GET" target="_blank">
   <div class="imgcontainer">
@@ -80,6 +91,9 @@ span.psw {
     <label><b>Password</b></label>
     <input id="password" name="password" type="password" value=""required>
     
+    <label><b>Verify Password</b></label>
+    <input id="password2" name="password" type="password" value=""required>
+	
 	<label><b>Email</b></label>
     <input id="email" name="email" type="text" value="" required>
 		
@@ -91,6 +105,8 @@ span.psw {
     <button type="button" onclick="Existing UserForm" class="redirect">Already A Member? Sign in here!</button>
   </div>
 </form>
-
+<script type="text/javascript">
+    document.getElementById("displayDT").innerHTML = Date();
+  </script>
 </body>
 </html>
