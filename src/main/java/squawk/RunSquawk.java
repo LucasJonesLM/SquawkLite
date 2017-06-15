@@ -39,13 +39,18 @@ public class RunSquawk {
 			users.add(new SquawkUser(req.queryParams("userName"),
 					req.queryParams("password"), req.queryParams("email")));
 			SquawkDB newUser = new SquawkDB();
+			String u;
 			if(newUser.checkUserExists(req.queryParams("userName"))){		
-			System.out.println("user does not exist");
-			newUser.insertUser(req.queryParams("userName"), req.queryParams("password"), req.queryParams("email"));
-			return true;
+				System.out.println("user does not exist");
+				newUser.insertUser(req.queryParams("userName"), req.queryParams("password"), req.queryParams("email"));
+				u = "Yes";
+			//	return "Yes";
+			}else{
+				System.out.println("User already exists!");
+				u = "No";
+				//return "No";
 			}
-			System.out.println("User already exists!");
-			return false;
+			return u;
 		});
 			 
 		
