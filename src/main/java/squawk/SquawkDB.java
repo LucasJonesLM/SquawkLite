@@ -58,9 +58,9 @@ public class SquawkDB {
 			System.out.println(e.getMessage());
 		}
 	}
-//Insert new user after existing user method and no user found that matches
+
 	public void insertUser(String UserName, String Password, String email) {
-		String sql = "INSERT INTO users(UserName, Password, email) VALUES(?,?,?)";
+		String sql = "INSERT INTO users(UserName, password, email) VALUES(?,?,?)";
 
 		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, UserName);
@@ -71,7 +71,7 @@ public class SquawkDB {
 			System.out.println(e.getMessage());
 		}
 	}
-// Check for existing user if user try to login from NewUser redirect to Existing user page
+
 	public boolean checkUserExists(String userName) throws SQLException {
 		String sql = "SELECT UserName FROM users WHERE UserName = ?";
 
@@ -83,31 +83,12 @@ public class SquawkDB {
 					//System.out.println(
 //							rs.getInt("id") + "\t" + rs.getString("name") + "\t"
 //									+ rs.getDouble("capacity"));
-					return true;
-				} else {
 					return false;
-				}
-			}
-		}
-	}
-	//check authentication
-	public boolean Authenticate(String userName, String password) throws SQLException {
-		String sql = "SELECT UserName FROM users WHERE UserName = ? AND Password = ?";
-
-		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
-			stmt.setString(1, userName);
-			stmt.setString(2, password);
-			try (ResultSet rs = stmt.executeQuery();) {
-				// loop through the result set
-				if (rs.next()) {
-					return true;
 				} else {
-					return false;
+					return true;
 				}
 			}
 		}
 	}
 
-	
-	
 }
