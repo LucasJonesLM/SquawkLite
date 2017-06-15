@@ -34,16 +34,23 @@ public class RunSquawk {
         });
 		
 
-		get("/createUser", (req, res) -> {
+		post("/createUser", (req, res) -> {
 			System.out.println("request made");
 			users.add(new SquawkUser(req.queryParams("userName"),
 					req.queryParams("password"), req.queryParams("email")));
-			return users.toString();
+			SquawkDB newUser = new SquawkDB();
+			if(newUser.checkUserExists(req.queryParams("userName"))){		
+			System.out.println("user does not exist");
+			newUser.insertUser(req.queryParams("userName"), req.queryParams("password"), req.queryParams("email"));
+			return true;
+			}
+			System.out.println("User already exists!");
+			return false;
 		});
 			 
 		
 		get("/create", (req, res) -> {
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/NewUserForm.html");
+			JtwigTemplate template = JtwigTemplate.classpathTemplate("/newUserTemplate.txt");
 			JtwigModel model = JtwigModel.newModel();
 			System.out.println("request made");
 			

@@ -60,7 +60,7 @@ public class SquawkDB {
 	}
 
 	public void insertUser(String UserName, String Password, String email) {
-		String sql = "INSERT INTO users(UserName, Password, email VALUES(?,?,?)";
+		String sql = "INSERT INTO users(UserName, password, email) VALUES(?,?,?)";
 
 		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, UserName);
@@ -83,9 +83,9 @@ public class SquawkDB {
 					//System.out.println(
 //							rs.getInt("id") + "\t" + rs.getString("name") + "\t"
 //									+ rs.getDouble("capacity"));
-					return true;
-				} else {
 					return false;
+				} else {
+					return true;
 				}
 			}
 		}
