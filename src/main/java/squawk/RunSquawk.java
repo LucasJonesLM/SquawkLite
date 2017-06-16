@@ -26,11 +26,30 @@ public class RunSquawk {
 		
 		get("/", (req, res) -> {
             System.out.println("request made");
-            JtwigTemplate template = JtwigTemplate.classpathTemplate("/ExistingUserForm.html");
-            JtwigModel model = JtwigModel.newModel();
+
+//            req.session().attribute("userid");
+//            req.session().attribute("userid", 67);
+//            
+//            int id = req.session().attribute("userid");
+
+            JtwigTemplate template = JtwigTemplate.classpathTemplate("/users.txt");
+            JtwigModel model = JtwigModel.newModel().with("users", users);
+
             return template.render(model);
         });
 		
+		// sets User ID for session
+		post("/sessionID", (req, res) -> {
+			System.out.println("request made");
+			SquawkDB sessionReq = new SquawkDB();
+			int uID = sessionReq.authenticateUsers(req.queryParams("userName"), req.queryParams("password"));
+			if(uID != -1) {
+			req.session().attribute("userid", uID);
+			}
+			return null;
+		});
+		
+
 		post("/createUser", (req, res) -> {
 			System.out.println("request made");
 			SquawkDB newUser = new SquawkDB();
@@ -57,7 +76,7 @@ public class RunSquawk {
 		post("/createSquawk", (req, res) -> {
 			System.out.println("request made");
 			SquawkDB newSquawk = new SquawkDB();
-			newSquawk.insertSquawk(req.queryParams("userSession"), req.queryParams("msg"));
+			newSquawk.insertSquawk(0, null);
 			newSquawk.close();
 			return null;
 		});
