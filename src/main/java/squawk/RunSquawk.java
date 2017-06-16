@@ -53,5 +53,14 @@ public class RunSquawk {
 			System.out.println("request made");
 			return template.render(model);
 		});
+		
+		post("/createSquawk", (req, res) -> {
+			System.out.println("request made");
+			SquawkDB newSquawk = new SquawkDB();
+			newSquawk.insertSquawk(req.queryParams("userSession"), req.queryParams("msg"));
+			newSquawk.close();
+			return null;
+		});
+		
 	}
 }
