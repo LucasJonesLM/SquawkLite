@@ -10,7 +10,7 @@ import java.sql.Statement;
 public class SquawkDB {
 	private final String url = "jdbc:sqlite:SquawkDB.db";
 	private Connection conn = null;
-	
+	//constructor instance of SquawkDB
 	public SquawkDB() throws SQLException {
 		this.connect();
 	}
@@ -29,19 +29,41 @@ public class SquawkDB {
 		this.conn.close();
 	}
 
-	public void createNewTable(String createDDL) {
-
-		// SQL statement for creating a new table
-		String sql = createDDL;
-
-		try (Statement stmt = conn.createStatement()) {
-			// create a new table
-			stmt.execute(sql);
-			System.out.println("Table created.");
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
+	public void createNewTable() {
+        // SQLite connection string passed in using String URL
+        // SQL statement for creating a new table
+        String sql = "CREATE TABLE IF NOT EXISTS users (\n"
+                + "	UserName TEXT NOT NULL UNIQUE,\n"
+                + " UserID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
+                + " password TEXT NOT NULL,\n"
+                + " email TEXT NOT NULL,\n"
+                + " MemberSince TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+                + ");";
+        
+        String sql1 = "CREATE TABLE IF NOT EXISTS SquawkMsg(\n"
+        		+ " msgID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+        		+ " userID INTEGER NOT NULL,\n"
+        		+ " Msg	TEXT NOT NULL,\n"
+        		+ " FOREIGN KEY(userID) REFERENCES users (userID),\n"
+        		+ " MsgDT INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+        		+ ");";
+        
+        String sql2 = "CREATE TABLE IF NOT EXISTS SquawkFollow(\n"
+        		+ " FollowingMeID INTEGER NOT NULL,\n"
+        		+ " MeFollowingYouID INTEGER NOT NULL,\n"
+        		+ " rowID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
+        		+ " FollowDT TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+        		+ ");";
+        		
+        try (Statement stmt = conn.createStatement()) {
+            // create new tables
+            stmt.execute(sql);
+            stmt.execute(sql1);
+            stmt.execute(sql2);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 	public void writeSQL(String SQLstmt) {
 		String sql = SQLstmt;
@@ -78,11 +100,7 @@ public class SquawkDB {
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
 			stmt.setString(1, userName);
 			try (ResultSet rs = stmt.executeQuery();) {
-				// loop through the result set
 				if (rs.next()) {
-					//System.out.println(
-//							rs.getInt("id") + "\t" + rs.getString("name") + "\t"
-//									+ rs.getDouble("capacity"));
 					return false;
 				} else {
 					return true;
@@ -90,5 +108,35 @@ public class SquawkDB {
 			}
 		}
 	}
+	public boolean authenticateUsers(String userName, String password) throws SQLException {
+		String sql = "SELECT UserName FROM users WHERE UserName = ? AND password = ?";
+
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+			stmt.setString(1, userName);
+			stmt.setString(2, password);
+			try (ResultSet rs = stmt.executeQuery();) {
+				if (rs.next()) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
+	}
+	/*public void renderSquawks(String SQLstmt) {
+		String sql = SQLstmt;
+
+		try (Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			// loop through the result set
+			while (rs.next()) {
+				System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
+						+ "\t" + rs.getDouble("capacity"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}*/
 
 }
