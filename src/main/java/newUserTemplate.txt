@@ -48,8 +48,8 @@ button.onclick = function () {
     };
     var first = document.getElementById('userName').value;
     var second = document.getElementById('password').value;
-    var second = document.getElementById('email').value;
-    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(second);
+    var third = document.getElementById('email').value;
+    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(third);
    // console.log(body);
     xhr.send(body);
 };

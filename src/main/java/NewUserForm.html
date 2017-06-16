@@ -14,17 +14,16 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
 }
 
-button {
+span {
     background-color: #4CAF50;
     color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
+    padding: 5px 20px;
     border: none;
     cursor: pointer;
     width: 100%;
 }
 
-button:hover {
+span:hover {
     opacity: 0.8;
 }
 
@@ -79,7 +78,7 @@ span.psw {
 <h2>SQUAWK New User Form</h2>
 <p id="displayDT"></p>
 
-<form action="/createUser" method="GET" target="_blank">
+<form action="/createUser" method="POST" target="_self">
   <div class="imgcontainer">
     <img src="http://mindlessones.com/wp-content/uploads/2008/11/squawk.jpg" alt="Avatar" class="avatar">
   </div>
@@ -96,17 +95,46 @@ span.psw {
 	
 	<label><b>Email</b></label>
     <input id="email" name="email" type="text" value="" required>
-		
-    <button type="submit">CREATE USER</button>
- 
+	<br>
+	<br>
+	<span id="ajax_button">Create User</span>	
+	<div id="userWarning">
+  	</div>
   </div>
-
+	 
   <div class="container" style="background-color:#f1f1f1">
-    <button type="button" onclick="Existing UserForm" class="redirect">Already A Member? Sign in here!</button>
+    <span id="existingUser">Already A Member? Sign in here!</span>
   </div>
-</form>
-<script type="text/javascript">
+ </form>
+<script>
     document.getElementById("displayDT").innerHTML = Date();
-  </script>
+// AJAX posting x-www-form-urlencoded
+var button = document.getElementById('ajax_button');
+button.onclick = function () {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/createUser');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+    	console.log(xhr.responseText);
+        if (xhr.responseText === "Yes") {
+        	window.location.href = "http://localhost:3000/";
+        } else {
+        	var userWarning = document.getElementById('userWarning');
+        	userWarning.innerHTML = "User Name already exists.  Please create a different User Name.";  
+        }
+    };
+    var first = document.getElementById('userName').value;
+    var second = document.getElementById('password').value;
+    var third = document.getElementById('email').value;
+    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(third);
+   // console.log(body);
+    xhr.send(body);
+};
+
+	var memButton = document.getElementById("existingUser");
+	memButton.onclick = function(){
+		window.location.href = "http://localhost:3000/";
+	}
+</script>
 </body>
 </html>

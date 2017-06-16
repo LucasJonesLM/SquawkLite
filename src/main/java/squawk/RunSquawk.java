@@ -26,48 +26,32 @@ public class RunSquawk {
 		
 		get("/", (req, res) -> {
             System.out.println("request made");
-
-            JtwigTemplate template = JtwigTemplate.classpathTemplate("/users.txt");
-            JtwigModel model = JtwigModel.newModel().with("users", users);
-
+            JtwigTemplate template = JtwigTemplate.classpathTemplate("/ExistingUserForm.html");
+            JtwigModel model = JtwigModel.newModel();
             return template.render(model);
         });
 		
-
 		post("/createUser", (req, res) -> {
 			System.out.println("request made");
-			users.add(new SquawkUser(req.queryParams("userName"),
-					req.queryParams("password"), req.queryParams("email")));
 			SquawkDB newUser = new SquawkDB();
 			String u;
 			if(newUser.checkUserExists(req.queryParams("userName"))){		
 				System.out.println("user does not exist");
 				newUser.insertUser(req.queryParams("userName"), req.queryParams("password"), req.queryParams("email"));
 				u = "Yes";
-			//	return "Yes";
 			}else{
 				System.out.println("User already exists!");
 				u = "No";
-				//return "No";
 			}
+			newUser.close();
 			return u;
 		});
-			 
-		
+			 		
 		get("/create", (req, res) -> {
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/newUserTemplate.txt");
+			JtwigTemplate template = JtwigTemplate.classpathTemplate("/NewUserForm.html");
 			JtwigModel model = JtwigModel.newModel();
 			System.out.println("request made");
-			
 			return template.render(model);
-
 		});
-		
-		
-
 	}
-
-
-
-
 }

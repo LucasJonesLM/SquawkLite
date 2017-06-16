@@ -14,17 +14,16 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
 }
 
-button {
+span {
     background-color: #4CAF50;
     color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
+    padding: 5px 20px;
     border: none;
     cursor: pointer;
     width: 100%;
 }
 
-button:hover {
+span:hover {
     opacity: 0.8;
 }
 
@@ -91,17 +90,22 @@ body {
 
     <label><b>Password</b></label>
     <input id="password" name="password" type="password" value="" required>
-        
-    <button type="submit">Login</button>
+    <br>   
+    <br> 
+    <span type="submit">Login</span>
  
   </div>
 
   <div class="container" style="background-color:#f1f1f1">
-    <button type="button" onclick="NewUserForm" class="redirect">Not a Member Yet? Click Here!</button>
+    <span id="newMember">Not a Member Yet? Click Here!</span>
   </div>
 </form>
-<script type="text/javascript">
+<script>
     document.getElementById("displayDT").innerHTML = Date();
-  </script>
+    var newButton = document.getElementById("newMember");
+    newButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/create";
+    };
+ </script>
 </body>
 </html>
