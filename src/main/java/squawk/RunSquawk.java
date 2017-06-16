@@ -26,12 +26,29 @@ public class RunSquawk {
 		
 		get("/", (req, res) -> {
             System.out.println("request made");
+//            req.session().attribute("userid");
+//            req.session().attribute("userid", 67);
+//            
+//            int id = req.session().attribute("userid");
 
             JtwigTemplate template = JtwigTemplate.classpathTemplate("/users.txt");
             JtwigModel model = JtwigModel.newModel().with("users", users);
 
             return template.render(model);
         });
+		
+		// sets User ID for session
+		post("/sessionID", (req, res) -> {
+			System.out.println("request made");
+			SquawkDB sessionReq = new SquawkDB();
+			int uID = sessionReq.authenticateUsers(req.queryParams("userName"), req.queryParams("password"));
+			if(uID != -1) {
+			req.session().attribute("userid", uID);
+			}
+			return null;
+		});
+		
+				
 		
 
 		post("/createUser", (req, res) -> {

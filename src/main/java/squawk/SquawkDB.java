@@ -93,6 +93,21 @@ public class SquawkDB {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public void insertSquawk(int userID, String Msg) {
+		String sql = "INSERT INTO SquawkMsg (userID, Msg) VALUES(?,?)";
+
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, userID);
+			pstmt.setString(2, Msg);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
+	
 
 	public boolean checkUserExists(String userName) throws SQLException {
 		String sql = "SELECT UserName FROM users WHERE UserName = ?";
@@ -108,22 +123,53 @@ public class SquawkDB {
 			}
 		}
 	}
-	public boolean authenticateUsers(String userName, String password) throws SQLException {
+	public int authenticateUsers(String userName, String password) throws SQLException {
 		String sql = "SELECT UserName FROM users WHERE UserName = ? AND password = ?";
-
-		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+		String sql2 ="SELECT UserID FROM users WHERE UserName = ?";
+		try (PreparedStatement stmt = conn.prepareStatement(sql); 
+				PreparedStatement stmt2 = conn.prepareStatement(sql2);) {
 			stmt.setString(1, userName);
 			stmt.setString(2, password);
+			stmt2.setString(1, userName);
 			try (ResultSet rs = stmt.executeQuery();) {
-				if (rs.next()) {
-					return false;
+				if (rs.next()) { 
+					ResultSet rsUserID = stmt2.executeQuery();				
+					return rsUserID.getInt("UserID");
 				} else {
-					return true;
+					return -1;
 				}
 			}
 		}
 	}
-	/*public void renderSquawks(String SQLstmt) {
+	
+	
+	public void renderMySquawks(String userID) {
+		String sql = "SELECT Msg, MsgDT, FROM SquawkMsg ORDER BY msgDT INNER JOIN ON users.userID = SquawkMsg.userID";
+
+		try (Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			// loop through the result set
+			while (rs.next()) {
+				System.out.println(rs.getString("Msg") + "\t" + rs.getString("MsgDT"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+//	 SELECT EMP_ID, NAME, DEPT FROM COMPANY INNER JOIN DEPARTMENT
+//	   ON COMPANY.ID = DEPARTMENT.EMP_ID;
+	
+//	CREATE TABLE `SquawkMsg` (
+//			`msgID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+//			`userID`	INTEGER NOT NULL,
+//			`Msg`	TEXT NOT NULL,
+//			`MsgDT`	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+//			FOREIGN KEY(`userID`) REFERENCES `users`(`userID`)
+//		);
+	
+	public void timeLineSquawks(String SQLstmt) {
 		String sql = SQLstmt;
 
 		try (Statement stmt = conn.createStatement();
@@ -137,6 +183,24 @@ public class SquawkDB {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-	}*/
+	}
+	
+	public void otherSquawks(String SQLstmt) {
+		String sql = SQLstmt;
+
+		try (Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			// loop through the result set
+			while (rs.next()) {
+				System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
+						+ "\t" + rs.getDouble("capacity"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
 
 }
