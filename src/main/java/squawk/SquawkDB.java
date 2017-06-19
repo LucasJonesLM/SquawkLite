@@ -65,25 +65,11 @@ public class SquawkDB {
         }
     }
 
-	public void writeSQL(String SQLstmt) {
-		String sql = SQLstmt;
-
-		try (Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
-			// loop through the result set
-			while (rs.next()) {
-				System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
-						+ "\t" + rs.getDouble("capacity"));
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-
+	// insert new user into squawk users table 
+	//check user runs before this
 	public void insertUser(String UserName, String Password, String email) {
-		String sql = "INSERT INTO users(UserName, password, email) VALUES(?,?,?)";
-
+			String sql = "INSERT INTO users(UserName, password, email) VALUES(?,?,?);";
+	
 		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, UserName);
 			pstmt.setString(2, Password);
@@ -91,7 +77,17 @@ public class SquawkDB {
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}
+		} 
+		//Following self on create new user
+		//Need to check on this to see if New User is inserted fast enough
+		String sql1 = "INSERT INTO SquawkFollow (UserName, UserID, TargetID ) SELECT UserName, UserID, UserID "
+				+ "FROM users WHERE UserName = ?;";
+		try (PreparedStatement pstmt2 = conn.prepareStatement(sql1)) {
+			pstmt2.setString(1, UserName);
+			pstmt2.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} 
 	}
 	
 	public void insertSquawk(int userID, String Msg) {
@@ -123,6 +119,9 @@ public class SquawkDB {
 			}
 		}
 	}
+	
+	
+	
 	public int authenticateUsers(String userName, String password) throws SQLException {
 		String sql = "SELECT UserName FROM users WHERE UserName = ? AND password = ?";
 		String sql2 ="SELECT UserID FROM users WHERE UserName = ?";
@@ -158,17 +157,8 @@ public class SquawkDB {
 		}
 	}
 	
-//	 SELECT EMP_ID, NAME, DEPT FROM COMPANY INNER JOIN DEPARTMENT
-//	   ON COMPANY.ID = DEPARTMENT.EMP_ID;
 	
-//	CREATE TABLE `SquawkMsg` (
-//			`msgID`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-//			`userID`	INTEGER NOT NULL,
-//			`Msg`	TEXT NOT NULL,
-//			`MsgDT`	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-//			FOREIGN KEY(`userID`) REFERENCES `users`(`userID`)
-//		);
-	
+	// My Squawks
 	public void renderMySquawks(String userID) {
 		String sql = "SELECT Msg, MsgDT FROM SquawkMsg INNER JOIN SquawkFollow ON users.userID = SquawkFollow.userID;";
 
@@ -186,22 +176,36 @@ public class SquawkDB {
 	
 	
 	// Takes parameter when click on page object or user
-	public void otherSquawks(String SQLstmt) {
-		String sql = SQLstmt;
-
-		try (Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
-			// loop through the result set
-			while (rs.next()) {
-				System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
-						+ "\t" + rs.getDouble("capacity"));
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-	
-	
-
+//	public void otherSquawks(String SQLstmt) {
+//		String sql = SQLstmt;
+//
+//		try (Statement stmt = conn.createStatement();
+//				ResultSet rs = stmt.executeQuery(sql)) {
+//
+//			// loop through the result set
+//			while (rs.next()) {
+//				System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
+//						+ "\t" + rs.getDouble("capacity"));
+//			}
+//		} catch (SQLException e) {
+//			System.out.println(e.getMessage());
+//		}
+//	}
+//	
+//	
+//	public void writeSQL(String SQLstmt) {
+//	String sql = SQLstmt;
+//
+//	try (Statement stmt = conn.createStatement();
+//			ResultSet rs = stmt.executeQuery(sql)) {
+//
+//		// loop through the result set
+//		while (rs.next()) {
+//			System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
+//					+ "\t" + rs.getDouble("capacity"));
+//		}
+//	} catch (SQLException e) {
+//		System.out.println(e.getMessage());
+//	}
+//}
 }
