@@ -85,6 +85,8 @@ span:hover {
     <div class="imgcontainer">
       <img src="http://mindlessones.com/wp-content/uploads/2008/11/squawk.jpg" alt="Avatar" class="avatar">
     </div>
+    <div id="userWarning">
+  	</div>
   <div class="container">
     <label><b>Username</b></label>
     <input id="userName" name="userName" type="text" value="" required>
@@ -93,7 +95,7 @@ span:hover {
     <input id="password" name="password" type="password" value="" required>
     <br>   
     <br> 
-    <span type="submit">Login</span>
+    <span id="login">Login</span>
  
   </div>
 
@@ -103,6 +105,31 @@ span:hover {
 </form>
 <script>
     document.getElementById("displayDT").innerHTML = Date();
+    // AJAX posting x-www-form-urlencoded
+var button = document.getElementById('login');
+button.onclick = function () {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/sessionID');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+    	
+        if (xhr.responseText === "Yes") {
+        	console.log("this is the response text" + xhr.responseText);
+        	window.location.href = "http://localhost:3000/SquawkTimeline";
+        } else {
+        	console.log("this is the FAIL response text" + xhr.responseText);
+        	var userWarning = document.getElementById('userWarning');
+        	userWarning.innerHTML = "Incorrect User Name and Password.";  
+        }
+    };
+    var first = document.getElementById('userName').value;
+    var second = document.getElementById('password').value;
+     var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second);
+    console.log(body);
+    xhr.send(body);
+};
+
+// Redirect to Create User page.
     var newButton = document.getElementById("newMember");
     newButton.onclick = function(){
     	window.location.href = "http://localhost:3000/create";
