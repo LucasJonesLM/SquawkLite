@@ -85,6 +85,8 @@ span:hover {
     <div class="imgcontainer">
       <img src="http://mindlessones.com/wp-content/uploads/2008/11/squawk.jpg" alt="Avatar" class="avatar">
     </div>
+    <div id="userWarning">
+  	</div>
   <div class="container">
     <label><b>Username</b></label>
     <input id="userName" name="userName" type="text" value="" required>
@@ -110,22 +112,21 @@ button.onclick = function () {
     xhr.open('POST', '/sessionID');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-    	console.log(xhr.responseText);
+    	
         if (xhr.responseText === "Yes") {
-        	window.location.href = "http://localhost:3000/";
+        	console.log("this is the response text" + xhr.responseText);
+        	window.location.href = "http://localhost:3000/SquawkTimeline";
         } else {
+        	console.log("this is the FAIL response text" + xhr.responseText);
         	var userWarning = document.getElementById('userWarning');
-        	userWarning.innerHTML = "User Name already exists.  Please create a different User Name.";  
+        	userWarning.innerHTML = "Incorrect User Name and Password.";  
         }
     };
     var first = document.getElementById('userName').value;
     var second = document.getElementById('password').value;
-    var third = document.getElementById('email').value;
-    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(third);
-   // console.log(body);
-    xhr.send(body);}else{
-	document.getElementById('divCheckPasswordMatch').innerHTML = "PASSWORDS DO NOT MATCH! TRY AGAIN";
-}
+     var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second);
+    console.log(body);
+    xhr.send(body);
 };
 
 // Redirect to Create User page.

@@ -62,7 +62,7 @@
           <div class="form-group">
             <textarea class="form-control" rows="3" required></textarea>
           </div>
-          <button id="squawk">Squawk</button>
+          <span id="squawk">Squawk</span>
         </form>
         <br><br>
 
@@ -104,36 +104,7 @@
 
 </body>
 <script>
-// AJAX posting x-www-form-urlencoded
-var button = document.getElementById('ajax_button');
-button.onclick = function () {
-	if(document.getElementById('password').value === document.getElementById('password2').value){
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/createUser');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-    	console.log(xhr.responseText);
-        if (xhr.responseText === "Yes") {
-        	window.location.href = "http://localhost:3000/";
-        } else {
-        	var userWarning = document.getElementById('userWarning');
-        	userWarning.innerHTML = "User Name already exists.  Please create a different User Name.";  
-        }
-    };
-    var first = document.getElementById('userName').value;
-    var second = document.getElementById('password').value;
-    var third = document.getElementById('email').value;
-    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(third);
-   // console.log(body);
-    xhr.send(body);}else{
-	document.getElementById('divCheckPasswordMatch').innerHTML = "PASSWORDS DO NOT MATCH! TRY AGAIN";
-}
-};
 
-	var memButton = document.getElementById("existingUser");
-	memButton.onclick = function(){
-		window.location.href = "http://localhost:3000/";
-	}
 </script>
 
 </html>

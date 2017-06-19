@@ -145,7 +145,7 @@ public class SquawkDB {
 	
 	
 	public void renderMySquawks(String userID) {
-		String sql = "SELECT Msg, MsgDT, FROM SquawkMsg ORDER BY msgDT INNER JOIN ON users.userID = SquawkMsg.userID";
+		String sql = "SELECT Msg, MsgDT, FROM SquawkMsg ORDER BY msgDT INNER JOIN ON SquawkMsg.userID = ?";
 
 		try (Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
