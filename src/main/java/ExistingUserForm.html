@@ -15,17 +15,16 @@
     box-sizing: border-box;
   }
 
-  button {
+span {
     background-color: #4CAF50;
     color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
+    padding: 5px 20px;
     border: none;
     cursor: pointer;
     width: 100%;
   }
 
-  button:hover {
+span:hover {
     opacity: 0.8;
   }
 
@@ -79,50 +78,36 @@
 
 <body>
 
-  <h2>SQUAWK New User Form</h2>
+  <h2>SQUAWK Login</h2>
   <p id="displayDT"></p>
 
   <form action="/createUser" method="GET" target="_blank">
     <div class="imgcontainer">
       <img src="http://mindlessones.com/wp-content/uploads/2008/11/squawk.jpg" alt="Avatar" class="avatar">
     </div>
+  <div class="container">
+    <label><b>Username</b></label>
+    <input id="userName" name="userName" type="text" value="" required>
 
-    <div class="container">
-      <label><b>Username</b></label>
-      <input id="userName" name="userName" type="text" value="" required>
+    <label><b>Password</b></label>
+    <input id="password" name="password" type="password" value="" required>
+    <br>   
+    <br> 
+    <span type="submit">Login</span>
+ 
+  </div>
 
-      <label><b>Password</b></label>
-      <input id="password" name="password" type="password" value="" required>
-
-      <label><b>Verify Password</b></label>
-      <input id="password2" name="password" type="password" value="" required>
-      <div class="registrationFormAlert" id="divCheckPasswordMatch">
-      </div>
-      <label><b>Email</b></label>
-      <input id="email" name="email" type="text" value="" required>
-
-      <button type="submit">CREATE USER</button>
-
-    </div>
-    <div class="container" style="background-color:#f1f1f1">
-      <button id="myBtn" type="button" onclick="Existing UserForm" class="redirect">Already A Member? Sign in here!</button>
-    </div>
-  </form>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript">
+  <div class="container" style="background-color:#f1f1f1">
+    <span id="newMember">Not a Member Yet? Click Here!</span>
+  </div>
+</form>
+<script>
     document.getElementById("displayDT").innerHTML = Date();
-  </script>
-  <!-- rawjs: document.getElementById("password") jquery: $("#password") -->
-  <!-- rawjs: document.querySelector("#password") jquery: $("#password") -->
-  <script type="text/javascript">
-    jQuery("form").submit(function(event) {
-      console.log("Good");
-      if (jQuery("#password").val() !== jQuery("#password2").val()) {
-        jQuery("#divCheckPasswordMatch").text("PASSWORDS DO NOT MATCH! TRY AGAIN");
-        return false;
-      }
-    });
-  </script>
+    var newButton = document.getElementById("newMember");
+    newButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/create";
+    };
+ </script>
 </body>
 
 </html>

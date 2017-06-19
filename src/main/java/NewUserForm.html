@@ -15,17 +15,18 @@
     box-sizing: border-box;
   }
 
-  button {
+
+span {
     background-color: #4CAF50;
     color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
+    padding: 5px 20px;
     border: none;
     cursor: pointer;
     width: 100%;
   }
 
-  button:hover {
+
+span:hover {
     opacity: 0.8;
   }
 
@@ -78,51 +79,72 @@
 </style>
 
 <body>
+<h2>SQUAWK New User Form</h2>
+<p id="displayDT"></p>
 
-  <h2>SQUAWK New User Form</h2>
-  <p id="displayDT"></p>
+<form action="/createUser" method="POST" target="_self">
+  <div class="imgcontainer">
+    <img src="http://mindlessones.com/wp-content/uploads/2008/11/squawk.jpg" alt="Avatar" class="avatar">
+  </div>
 
-  <form action="/createUser" method="GET" target="_blank">
-    <div class="imgcontainer">
-      <img src="http://mindlessones.com/wp-content/uploads/2008/11/squawk.jpg" alt="Avatar" class="avatar">
-    </div>
+  <div class="container">
+    <label><b>Username</b></label>
+    <input id="userName" name="userName" type="text" value="" required>
 
-    <div class="container">
-      <label><b>Username</b></label>
-      <input id="userName" name="userName" type="text" value="" required>
-
-      <label><b>Password</b></label>
-      <input id="password" name="password" type="password" value="" required>
-
-      <label><b>Verify Password</b></label>
-      <input id="password2" name="password" type="password" value="" required>
-      <div class="registrationFormAlert" id="divCheckPasswordMatch">
-      </div>
-      <label><b>Email</b></label>
-      <input id="email" name="email" type="text" value="" required>
-
-      <button type="submit">CREATE USER</button>
-
-    </div>
-    <div class="container" style="background-color:#f1f1f1">
-      <button id="myBtn" type="button" onclick="Existing UserForm" class="redirect">Already A Member? Sign in here!</button>
-    </div>
-  </form>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript">
+    <label><b>Password</b></label>
+    <input id="password" name="password" type="password" value=""required>
+    
+    <label><b>Verify Password</b></label>
+    <input id="password2" name="password" type="password" value=""required>
+    <div id="divCheckPasswordMatch">
+  	</div>
+	
+	<label><b>Email</b></label>
+    <input id="email" name="email" type="text" value="" required>
+	<br>
+	<br>
+	<span id="ajax_button">Create User</span>	
+	<div id="userWarning">
+  	</div>
+  </div>
+	 
+  <div class="container" style="background-color:#f1f1f1">
+    <span id="existingUser">Already A Member? Sign in here!</span>
+  </div>
+ </form>
+<script>
     document.getElementById("displayDT").innerHTML = Date();
-  </script>
-  <!-- rawjs: document.getElementById("password") jquery: $("#password") -->
-  <!-- rawjs: document.querySelector("#password") jquery: $("#password") -->
-  <script type="text/javascript">
-    jQuery("form").submit(function(event) {
-      console.log("Good");
-      if (jQuery("#password").val() !== jQuery("#password2").val()) {
-        jQuery("#divCheckPasswordMatch").text("PASSWORDS DO NOT MATCH! TRY AGAIN");
-        return false;
-      }
-    });
-  </script>
+// AJAX posting x-www-form-urlencoded
+var button = document.getElementById('ajax_button');
+button.onclick = function () {
+	if(document.getElementById('password').value === document.getElementById('password2').value){
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/createUser');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+    	console.log(xhr.responseText);
+        if (xhr.responseText === "Yes") {
+        	window.location.href = "http://localhost:3000/";
+        } else {
+        	var userWarning = document.getElementById('userWarning');
+        	userWarning.innerHTML = "User Name already exists.  Please create a different User Name.";  
+        }
+    };
+    var first = document.getElementById('userName').value;
+    var second = document.getElementById('password').value;
+    var third = document.getElementById('email').value;
+    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(third);
+   // console.log(body);
+    xhr.send(body);}else{
+	document.getElementById('divCheckPasswordMatch').innerHTML = "PASSWORDS DO NOT MATCH! TRY AGAIN";
+}
+};
+
+	var memButton = document.getElementById("existingUser");
+	memButton.onclick = function(){
+		window.location.href = "http://localhost:3000/";
+	}
+</script>
 </body>
 
 </html>
