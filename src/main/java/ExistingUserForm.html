@@ -93,7 +93,7 @@ span:hover {
     <input id="password" name="password" type="password" value="" required>
     <br>   
     <br> 
-    <span type="submit">Login</span>
+    <span id="login">Login</span>
  
   </div>
 
@@ -103,6 +103,32 @@ span:hover {
 </form>
 <script>
     document.getElementById("displayDT").innerHTML = Date();
+    // AJAX posting x-www-form-urlencoded
+var button = document.getElementById('login');
+button.onclick = function () {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/sessionID');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+    	console.log(xhr.responseText);
+        if (xhr.responseText === "Yes") {
+        	window.location.href = "http://localhost:3000/";
+        } else {
+        	var userWarning = document.getElementById('userWarning');
+        	userWarning.innerHTML = "User Name already exists.  Please create a different User Name.";  
+        }
+    };
+    var first = document.getElementById('userName').value;
+    var second = document.getElementById('password').value;
+    var third = document.getElementById('email').value;
+    var body = 'userName=' + encodeURIComponent(first) + '&password=' + encodeURIComponent(second) + '&email=' + encodeURIComponent(third);
+   // console.log(body);
+    xhr.send(body);}else{
+	document.getElementById('divCheckPasswordMatch').innerHTML = "PASSWORDS DO NOT MATCH! TRY AGAIN";
+}
+};
+
+// Redirect to Create User page.
     var newButton = document.getElementById("newMember");
     newButton.onclick = function(){
     	window.location.href = "http://localhost:3000/create";

@@ -32,7 +32,7 @@ public class RunSquawk {
 //            
 //            int id = req.session().attribute("userid");
 
-            JtwigTemplate template = JtwigTemplate.classpathTemplate("/users.txt");
+            JtwigTemplate template = JtwigTemplate.classpathTemplate("/ExistingUserForm.html");
             JtwigModel model = JtwigModel.newModel().with("users", users);
 
             return template.render(model);
@@ -42,11 +42,12 @@ public class RunSquawk {
 		post("/sessionID", (req, res) -> {
 			System.out.println("request made");
 			SquawkDB sessionReq = new SquawkDB();
-			int uID = sessionReq.authenticateUsers(req.queryParams("userName"), req.queryParams("password"));
-			if(uID != -1) {
-			req.session().attribute("userid", uID);
-			}
+			SquawkUser u = sessionReq.authenticateUsers(req.queryParams("userName"), req.queryParams("password"));
+			if(u != null) {
+			req.session().attribute("user", u);
 			return null;
+			}
+			return "Invalid User Name and Password";
 		});
 		
 

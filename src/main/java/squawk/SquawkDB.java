@@ -123,9 +123,9 @@ public class SquawkDB {
 			}
 		}
 	}
-	public int authenticateUsers(String userName, String password) throws SQLException {
+	public SquawkUser authenticateUsers(String userName, String password) throws SQLException {
 		String sql = "SELECT UserName FROM users WHERE UserName = ? AND password = ?";
-		String sql2 ="SELECT UserID FROM users WHERE UserName = ?";
+		String sql2 ="SELECT * FROM users WHERE UserName = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql); 
 				PreparedStatement stmt2 = conn.prepareStatement(sql2);) {
 			stmt.setString(1, userName);
@@ -133,10 +133,11 @@ public class SquawkDB {
 			stmt2.setString(1, userName);
 			try (ResultSet rs = stmt.executeQuery();) {
 				if (rs.next()) { 
-					ResultSet rsUserID = stmt2.executeQuery();				
-					return rsUserID.getInt("UserID");
+					ResultSet rsUser = stmt2.executeQuery();
+					SquawkUser nSk = new SquawkUser(rsUser.getString("UserName"), rsUser.getString("password"), rsUser.getString("email"), rsUser.getInt("UserID"));
+					return nSk;
 				} else {
-					return -1;
+					return null;
 				}
 			}
 		}
