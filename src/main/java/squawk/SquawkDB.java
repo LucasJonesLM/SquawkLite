@@ -143,8 +143,8 @@ public class SquawkDB {
 	}
 	
 	
-	public void renderMySquawks(String userID) {
-		String sql = "SELECT Msg, MsgDT, FROM SquawkMsg ORDER BY msgDT INNER JOIN ON users.userID = SquawkMsg.userID";
+	public void timeLineSquawks(String userID) {
+		String sql = "SELECT Msg, MsgDT FROM SquawkMsg WHERE UserID in (SELECT TargetID FROM SquawkFollow WHERE UserID="  + userID +");"; 
 
 		try (Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
@@ -169,22 +169,23 @@ public class SquawkDB {
 //			FOREIGN KEY(`userID`) REFERENCES `users`(`userID`)
 //		);
 	
-	public void timeLineSquawks(String SQLstmt) {
-		String sql = SQLstmt;
+	public void renderMySquawks(String userID) {
+		String sql = "SELECT Msg, MsgDT FROM SquawkMsg INNER JOIN SquawkFollow ON users.userID = SquawkFollow.userID;";
 
 		try (Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql)) {
 
 			// loop through the result set
 			while (rs.next()) {
-				System.out.println(rs.getInt("id") + "\t" + rs.getString("name")
-						+ "\t" + rs.getDouble("capacity"));
+				System.out.println(rs.getInt("Msg") + "\t" + rs.getString("MsgDT"));
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
+	
+	// Takes parameter when click on page object or user
 	public void otherSquawks(String SQLstmt) {
 		String sql = SQLstmt;
 
