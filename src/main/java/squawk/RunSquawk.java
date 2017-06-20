@@ -59,7 +59,7 @@ public class RunSquawk {
 				sessionReq.close();
 				return "Invalid User Name and Password";
 			}
-			req.session().attribute("user", u);
+			req.session().attribute("user", u);//this calls the user ID for the session user: req.session().attribute("user").userID
 			System.out.println("session success!");
 			System.out.println(u.toString());
 			sessionReq.close();
@@ -88,7 +88,7 @@ public class RunSquawk {
 			System.out.println("request made");
 			return template.render(model);
 		});
-
+		// posts squawk for first time 
 		post("/createSquawk", (req, res) -> {
 			System.out.println("request made");
 			SquawkUser user = req.session().attribute("user");
@@ -97,9 +97,11 @@ public class RunSquawk {
 				return "login";
 			}
 			SquawkDB newSquawk = new SquawkDB();
-			newSquawk.insertSquawk(0, null);
+			int uID = user.userID;
+			System.out.println(uID);
+			newSquawk.insertSquawk(uID, req.queryParams("SquawkPost"));
 			newSquawk.close();
-			return null;
+			return "yes";
 		});
 
 	}

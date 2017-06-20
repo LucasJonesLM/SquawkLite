@@ -91,11 +91,13 @@ public class SquawkDB {
 	}
 	
 	public void insertSquawk(int userID, String Msg) {
-		String sql = "INSERT INTO SquawkMsg (userID, Msg) VALUES(?,?)";
-
+		String sql = "INSERT INTO SquawkMsg(userID, Msg, AuthorID) VALUES(?,?,?);";
+		
 		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setInt(1, userID);
+			System.out.println(Msg);
 			pstmt.setString(2, Msg);
+			pstmt.setInt(3, userID);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

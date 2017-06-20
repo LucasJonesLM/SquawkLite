@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>Squawk Me</title>
   <meta charset="utf-8">
@@ -9,6 +8,14 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
+  span {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 
     .row.content {
@@ -40,9 +47,7 @@
     }
   </style>
 </head>
-
 <body>
-
   <div class="container-fluid">
     <div class="row content">
       <div class="col-sm-3 sidenav">
@@ -58,12 +63,11 @@
       <div class="col-sm-9">
         <br><br>
         <h4>Post a Squawk</h4>
-        <form role="form">
           <div class="form-group">
-            <textarea class="form-control" rows="3" required></textarea>
+            <textarea class="form-control" id ="SquawkPost" rows="3" required></textarea>
           </div>
-          <span id="squawk">Squawk</span>
-        </form>
+          <button id="ajax_button">Squawk</button>
+  
         <br><br>
 
         <!-- <p><span class="badge">2</span>Squawk History</p><br>
@@ -101,10 +105,28 @@
         <footer class="container-fluid">
           <p>Have you Squawked Today?</p>
         </footer>
-
-</body>
 <script>
-
+    // AJAX posting x-www-form-urlencoded
+var button = document.getElementById('ajax_button');
+button.onclick = function () {
+	console.log("button clicked");
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/createSquawk');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+    	
+        if (xhr.responseText === "yes") {
+        	console.log("this is the response text" + xhr.responseText);
+        
+        }
+    };
+    var Squawk = document.getElementById('SquawkPost').value;
+    console.log(Squawk);
+    var body = 'SquawkPost=' + encodeURIComponent(Squawk);
+    console.log(body);
+    xhr.send(body);
+}
 </script>
+</body>
 
 </html>
