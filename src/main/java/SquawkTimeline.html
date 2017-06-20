@@ -112,12 +112,36 @@ button.onclick = function () {
         
         }
     };
+    
+    
     var Squawk = document.getElementById('SquawkPost').value;
     console.log(Squawk);
     var body = 'SquawkPost=' + encodeURIComponent(Squawk);
     console.log(body);
     xhr.send(body);
 }
+
+
+setInterval(function(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/timeLineSquawk');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+         var response = JSON.Parse(xhr.responseText);
+         for (var i = 0; i < response.length; i++) {
+         var new_row = document.createElement('div');
+         new_row.setAttribute("class", "col-sm-2 text-center" );
+         div.innerHTML = response[i].AuthorName + "Author Name " +  response[i].Msg + "Msg " + response[i].MsgDT + "MsgDT";
+         document.getElementById('Timeline').appendChild(new_row);
+         }
+        }
+    };
+}, 60000);
+
+
+
+
 </script>
 </body>
 

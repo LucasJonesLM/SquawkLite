@@ -104,5 +104,16 @@ public class RunSquawk {
 			return "yes";
 		});
 
+	post("/timeLineSquawk", (req, res) -> {
+		System.out.println("request made");
+		SquawkUser user = req.session().attribute("user");
+		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
+		int uID = user.userID;  // userID is passed from session attribute user
+		System.out.println(uID);
+		Gson gson = new Gson();
+		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
+		timeLineSquawk.close();
+		return gson.toJson(timeLineSquawk.timeLineSquawks(uID));
+		});
 	}
 }
