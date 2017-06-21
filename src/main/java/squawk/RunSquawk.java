@@ -32,7 +32,8 @@ public class RunSquawk {
 			//
 			// int id = req.session().attribute("userid");
 
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/ExistingUserForm.html");
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/ExistingUserForm.html");
 			JtwigModel model = JtwigModel.newModel().with("users", users);
 
 			return template.render(model);
@@ -41,11 +42,12 @@ public class RunSquawk {
 		get("/SquawkTimeline", (req, res) -> {
 			System.out.println("request made");
 			SquawkUser user = req.session().attribute("user");
-			if(user == null){
+			if (user == null) {
 				res.redirect("/");
 				return "login";
 			}
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/SquawkTimeline.html");
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/SquawkTimeline.html");
 			JtwigModel model = JtwigModel.newModel();
 			return template.render(model);
 		});
@@ -54,12 +56,13 @@ public class RunSquawk {
 		post("/sessionID", (req, res) -> {
 			System.out.println("request session");
 			SquawkDB sessionReq = new SquawkDB();
-			SquawkUser u = sessionReq.authenticateUsers(req.queryParams("userName"), req.queryParams("password"));
+			SquawkUser u = sessionReq.authenticateUsers(
+					req.queryParams("userName"), req.queryParams("password"));
 			if (u == null) {
 				sessionReq.close();
 				return "Invalid User Name and Password";
 			}
-			req.session().attribute("user", u);//this calls the user ID for the session user: req.session().attribute("user").userID
+			req.session().attribute("user", u);
 			System.out.println("session success!");
 			System.out.println(u.toString());
 			sessionReq.close();
@@ -72,7 +75,8 @@ public class RunSquawk {
 			String u;
 			if (newUser.checkUserExists(req.queryParams("userName"))) {
 				System.out.println("user does not exist");
-				newUser.insertUser(req.queryParams("userName"), req.queryParams("password"), req.queryParams("email"));
+				newUser.insertUser(req.queryParams("userName"),
+						req.queryParams("password"), req.queryParams("email"));
 				u = "Yes";
 			} else {
 				System.out.println("User already exists!");
@@ -83,16 +87,17 @@ public class RunSquawk {
 		});
 
 		get("/create", (req, res) -> {
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/NewUserForm.html");
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/NewUserForm.html");
 			JtwigModel model = JtwigModel.newModel();
 			System.out.println("request made");
 			return template.render(model);
 		});
-		// posts squawk for first time 
+		// posts squawk for first time
 		post("/createSquawk", (req, res) -> {
 			System.out.println("request made");
 			SquawkUser user = req.session().attribute("user");
-			if(user == null){
+			if (user == null) {
 				res.status(403);
 				return "login";
 			}
@@ -104,16 +109,14 @@ public class RunSquawk {
 			return "yes";
 		});
 
-	post("/timeLineSquawk", (req, res) -> {
-		System.out.println("request made");
-		SquawkUser user = req.session().attribute("user");
-		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
-		int uID = user.userID;  // userID is passed from session attribute user
-		System.out.println(uID);
-		Gson gson = new Gson();
-		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
-		timeLineSquawk.close();
-		return gson.toJson(timeLineSquawk.timeLineSquawks(uID));
+		post("/timeLineSquawk", (req, res) -> {
+			System.out.println("request made");
+			SquawkUser user = req.session().attribute("user");
+			SquawkDB timeLineSquawk = new SquawkDB(); // db connection
+			Gson gson = new Gson();
+			String body = gson.toJson(timeLineSquawk.timeLineSquawks(user.userID));
+			timeLineSquawk.close();
+			return body;
 		});
 	}
 }
