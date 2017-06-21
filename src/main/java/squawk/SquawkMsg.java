@@ -3,14 +3,15 @@ package squawk;
 public class SquawkMsg {
 	String Msg;
 	String MsgDT;
-	int UserID;
+	String AuthorName;
 	
-	public SquawkMsg(String msg, String msgDT, int userID) {
+	public SquawkMsg(String msg, String msgDT, String AuthorName) {
 		super();
-		Msg = msg;
-		MsgDT = msgDT;
-		UserID = userID;
+		this.Msg = msg;
+		this.MsgDT = msgDT;
+		this.AuthorName = AuthorName;
 	}
+	
 	
 	
 }

@@ -53,10 +53,12 @@
       <div class="col-sm-3 sidenav">
         <h4>Welcome to Squawk</h4>
         <ul class="nav nav-pills nav-stacked">
-          <li class="active"><a href="#section1">Home</a></li>
-          <li><a href="#section2">Followers</a></li>
-          <li><a href="#section3"></a></li>
-          <li><a href="#section3"></a></li>
+          <li id="home" class="active"><a href="#section1">Home</a></li>
+          <li><a href="#section2">Squawkers who follow me</a></li>
+          <li><a href="#section3">Squawkers I follow</a></li>
+          <li><a href="#section4"></a>My Squawks</li>
+          <li><a href="#section4"></a></li>
+          
         </ul><br>
       </div>
 
@@ -97,8 +99,6 @@
     </div>
   </div> -->
         <div id="Timeline">
-        
-        !!!Fill in with AJAX timeline query!!!
         </div>
 
 
@@ -108,7 +108,7 @@
 <script>
     // AJAX posting x-www-form-urlencoded
 var button = document.getElementById('ajax_button');
-button.onclick = function () {
+function postSquawk() {
 	console.log("button clicked");
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/createSquawk');
@@ -116,16 +116,54 @@ button.onclick = function () {
     xhr.onload = function() {
     	
         if (xhr.responseText === "yes") {
-        	console.log("this is the response text" + xhr.responseText);
+        	runtimeline();
+        	document.getElementById('SquawkPost').value = '';
+        	console.log("this is the response text " + xhr.responseText);
         
         }
     };
-    var Squawk = document.getElementById('SquawkPost').value;
-    console.log(Squawk);
-    var body = 'SquawkPost=' + encodeURIComponent(Squawk);
-    console.log(body);
-    xhr.send(body);
+    
+    
+   var Squawk = document.getElementById('SquawkPost').value;
+   console.log(Squawk);
+   var body = 'SquawkPost=' + encodeURIComponent(Squawk);
+   console.log(body);
+   xhr.send(body);
+};
+button.onclick = postSquawk;
+document.getElementById("SquawkPost").onkeypress = function(evt)  {
+   if (evt.keyCode == 13) {
+   postSquawk();
+   return false;
+   }
+};
+var go = setInterval(function(){ runtimeline() }, 20000);
+
+function runtimeline(){
+	console.log("timeline activated");
+    var xr = new XMLHttpRequest();
+    xr.open('POST', '/timeLineSquawk');
+    xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xr.onload = function() {
+        if (xr.status === 200) {
+        console.log(xr.responseText);
+         var response = JSON.parse(xr.responseText);
+         var div_contain = document.createElement('div');
+         for (var i = 0; i < response.length; i++) {
+         var new_row = document.createElement('div');
+        // new_row.setAttribute("class", "col-sm-2 text-center" );
+         new_row.innerHTML = "Who is Squawking:  " + response[i].AuthorName + "  Your Squawk Message  " +  response[i].Msg + " Squawked Date:  " + response[i].MsgDT;
+         div_contain.appendChild(new_row);
+         }
+         document.getElementById('Timeline').innerHTML = div_contain.innerHTML;
+        }
+        
+    };
+		xr.send();
 }
+
+
+
 </script>
 </body>
 

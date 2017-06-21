@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class SquawkDB {
 	private final String url = "jdbc:sqlite:SquawkDB.db";
@@ -144,19 +145,26 @@ public class SquawkDB {
 	
 	
 
-	public void timeLineSquawks(String userID) {
-		String sql = "SELECT Msg, MsgDT FROM SquawkMsg WHERE UserID in (SELECT TargetID FROM SquawkFollow WHERE UserID="  + userID +");"; 
+	public ArrayList<SquawkMsg> timeLineSquawks(int userID) {
+		String sql = "SELECT Msg, MsgDT, users.UserName FROM SquawkFollow INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  WHERE SquawkFollow.UserID = ? ORDER BY MsgDT DESC;";
 
-		try (Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+				stmt.setInt(1, userID);
+			try(ResultSet rs = stmt.executeQuery();){
+				ArrayList<SquawkMsg> timeLineOutput = new ArrayList<SquawkMsg>();
 			// loop through the result set
-			while (rs.next()) {
-				System.out.println(rs.getString("Msg") + "\t" + rs.getString("MsgDT"));
-			}
+			while (rs.next()) { 
+				timeLineOutput.add(new SquawkMsg (rs.getString("Msg"), rs.getString("MsgDT"), rs.getString("UserName")));
+			} 
+			System.out.println("timeline arraylist created");
+			return timeLineOutput;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 	
 	
