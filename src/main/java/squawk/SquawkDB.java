@@ -147,12 +147,13 @@ public class SquawkDB {
 	}
 
 	public ArrayList<SquawkMsg> timeLineSquawks(int userID) {
-		String sql = "SELECT Msg, MsgDT, users.UserName, msgID, sum(LikeCT) as Likes FROM SquawkFollow "
+		String sql = "SELECT Msg, MsgDT, users.UserName, SquawkMsg.msgID, sum(LikeCT) AS Likes FROM SquawkFollow "
 				+ "INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID "
-				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  "
-				+ "INNER JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID"
+				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID "
+				+ "LEFT JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID "
 				+ "WHERE SquawkFollow.UserID = ? "
-				+ "GROUP BY Msg, MsgDT, users.UserName, msgID ORDER BY MsgDT DESC;";
+				+ "GROUP BY Msg, MsgDT, users.UserName, SquawkMsg.msgID "
+				+ "ORDER BY MsgDT DESC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
 			stmt.setInt(1, userID);
@@ -163,7 +164,7 @@ public class SquawkDB {
 
 					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"),
 							rs.getString("MsgDT"), rs.getString("UserName"),
-							rs.getInt("MsgID"),rs.getInt("Likes")));
+							rs.getInt("MsgID"), rs.getInt("Likes")));
 
 				}
 				System.out.println("timeline arraylist created");
@@ -181,8 +182,8 @@ public class SquawkDB {
 	public ArrayList<SquawkMsg> renderMySquawks(int userID) {
 		String sql = "SELECT Msg, MsgDT, users.UserName, msgID, sum(LikeCT) as Likes FROM SquawkMsg "
 				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  "
-				+ "INNER JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID"
-				+ "WHERE SquawkMsg.UserID = ? "
+				+ "INNER JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID "
+				+ "WHERE SquawkMsg.userID = ? "
 				+ "GROUP BY Msg, MsgDT, users.UserName, msgID ORDER BY MsgDT DESC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {

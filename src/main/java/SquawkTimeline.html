@@ -124,7 +124,6 @@ function runtimeline(){
     xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xr.onload = function() {
         if (xr.status === 200) {
-	        console.log(xr.responseText);
 	         var response = JSON.parse(xr.responseText);
 	         var div = document.getElementById('Timeline');
 	         var content = '';
