@@ -46,7 +46,8 @@ public class SquawkDB {
 				+ " FOREIGN KEY(userID) REFERENCES users (userID),\n"
 				+ " MsgDT INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" + ");";
 
-		String sql2 = "CREATE TABLE IF NOT EXISTS SquawkFollow(\n" + " FollowingMeID INTEGER NOT NULL,\n"
+		String sql2 = "CREATE TABLE IF NOT EXISTS SquawkFollow(\n"
+				+ " FollowingMeID INTEGER NOT NULL,\n"
 				+ " MeFollowingYouID INTEGER NOT NULL,\n"
 				+ " rowID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
 				+ " FollowDT TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" + ");";
@@ -61,9 +62,11 @@ public class SquawkDB {
 		}
 	}
 
+
 	public void insertUser(String UserName, String Password, String email) throws SQLException {
 		String sql = "INSERT INTO users(UserName, password, email) VALUES(?,?,?);";
-		String sql1 = "INSERT INTO SquawkFollow (UserName, UserID, TargetID ) " + "SELECT UserName, UserID, UserID "
+		String sql1 = "INSERT INTO SquawkFollow (UserName, UserID, TargetID ) "
+				+ "SELECT UserName, UserID, UserID "
 				+ "FROM users WHERE UserName = ?;";
 		try (PreparedStatement pstmt = conn.prepareStatement(sql);
 				PreparedStatement pstmt2 = conn.prepareStatement(sql1)) {
@@ -139,10 +142,13 @@ public class SquawkDB {
 	}
 
 	public ArrayList<SquawkMsg> timeLineSquawks(int userID) {
-		String sql = "SELECT Msg, MsgDT, users.UserName, msgID FROM SquawkFollow "
+		String sql = "SELECT Msg, MsgDT, users.UserName, SquawkMsg.msgID, sum(LikeCT) AS Likes FROM SquawkFollow "
 				+ "INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID "
-				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  "
-				+ "WHERE SquawkFollow.UserID = ? ORDER BY MsgDT DESC;";
+				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID "
+				+ "LEFT JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID "
+				+ "WHERE SquawkFollow.UserID = ? "
+				+ "GROUP BY Msg, MsgDT, users.UserName, SquawkMsg.msgID "
+				+ "ORDER BY MsgDT DESC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
 			stmt.setInt(1, userID);
@@ -150,10 +156,9 @@ public class SquawkDB {
 				ArrayList<SquawkMsg> timeLineOutput = new ArrayList<SquawkMsg>();
 				// loop through the result set
 				while (rs.next()) {
-
-					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"), rs.getString("MsgDT"),
-							rs.getString("UserName"), rs.getInt("msgID")));
-
+					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"),
+							rs.getString("MsgDT"), rs.getString("UserName"),
+							rs.getInt("MsgID"), rs.getInt("Likes")));
 				}
 				System.out.println("timeline arraylist created");
 				return timeLineOutput;
@@ -168,9 +173,11 @@ public class SquawkDB {
 
 	// My Squawks
 	public ArrayList<SquawkMsg> renderMySquawks(int userID) {
-		String sql = "SELECT Msg, MsgDT, users.UserName, MsgID FROM SquawkMsg "
+		String sql = "SELECT Msg, MsgDT, users.UserName, msgID, sum(LikeCT) as Likes FROM SquawkMsg "
 				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  "
-				+ "WHERE SquawkMsg.UserID = ? ORDER BY MsgDT DESC;";
+				+ "INNER JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID "
+				+ "WHERE SquawkMsg.userID = ? "
+				+ "GROUP BY Msg, MsgDT, users.UserName, msgID ORDER BY MsgDT DESC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
 			stmt.setInt(1, userID);
@@ -178,8 +185,10 @@ public class SquawkDB {
 				ArrayList<SquawkMsg> timeLineOutput = new ArrayList<SquawkMsg>();
 				// loop through the result set
 				while (rs.next()) {
-					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"), rs.getString("MsgDT"),
-							rs.getString("UserName"), rs.getInt("MsgID")));
+					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"),
+							rs.getString("MsgDT"), rs.getString("UserName"),
+							rs.getInt("MsgID"),rs.getInt("Likes")));
+
 				}
 				System.out.println("My Squawk arraylist created");
 				return timeLineOutput;
@@ -226,13 +235,20 @@ public class SquawkDB {
 		}
 	}
 
-	public void counttLike(int msgID) throws SQLException {
-		String sql = "INSERT INTO LikeCounts(MsgID) VALUES(?);";
+	public String countLike(int msgID) {
+		String sql = "SELECT msgID, sum(LikeCT) AS LIKESUM FROM LikeCounts Group By msgID WHERE msgID = ?;";
 
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, msgID);
-			pstmt.executeUpdate();
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+			stmt.setInt(1, msgID);
+			try (ResultSet rs = stmt.executeQuery();) {
+				return rs.getString("LIKESUM");
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 		}
+		return null;
 	}
 
 	public ArrayList<String> FollowMe(int userID) {

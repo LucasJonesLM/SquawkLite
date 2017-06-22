@@ -109,8 +109,7 @@ public class RunSquawk {
 			like.close();
 			return "";
 		});
-
-
+	
 	post("/timeLineSquawk", (req, res) -> {
 		System.out.println("run timeline");
 		SquawkUser user = req.session().attribute("user");
