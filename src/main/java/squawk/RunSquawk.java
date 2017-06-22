@@ -119,6 +119,16 @@ public class RunSquawk {
 			like.close();
 			return "";
 		});
+	
+	post("/countLike", (req, res)-> {
+		System.out.println("Count of Likes coming back");
+		SquawkDB count = new SquawkDB();
+		int msgID = Integer.parseInt(req.queryParams("MsgID"));
+		Gson gson = new Gson();
+		String countJson = gson.toJson(count.countLike(msgID));
+		count.close();
+		return countJson;	
+	});
 
 
 	post("/timeLineSquawk", (req, res) -> {

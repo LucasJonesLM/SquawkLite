@@ -94,8 +94,7 @@ function postSquawk() {
         if (xhr.responseText === "yes") {
         	runtimeline();
         	document.getElementById('SquawkPost').value = '';
-        	console.log("this is the response text " + xhr.responseText);
-        
+        	console.log("this is the response text " + xhr.responseText); 
         }
     };   
    
@@ -116,6 +115,8 @@ document.getElementById("SquawkPost").onkeypress = function(evt)  {
 
 var go = setInterval(function(){ runtimeline() }, 20000);
 
+
+
 function runtimeline(){
 	console.log("timeline activated");
     var xr = new XMLHttpRequest();
@@ -126,7 +127,6 @@ function runtimeline(){
 	        console.log(xr.responseText);
 	         var response = JSON.parse(xr.responseText);
 	         var div = document.getElementById('Timeline');
-	         
 	         var content = '';
 	         for (var i in response) {
 	         	var squawk = response[i];
@@ -137,6 +137,7 @@ function runtimeline(){
 		         		<button userId="${squawk.AuthorName}" class="squawkbutton">Follow</button>
 		         		<button likeId="${squawk.MsgID}" class="squawkbutton">Like</button>
 		         		<button class="squawkbutton">ReSquawk</button>
+		         		<span>"${squawk.Likes}"</span>
 		         		<caption>
 		         		<p></p>
 		         		<div>${squawk.AuthorName}</div>
@@ -182,7 +183,7 @@ function setLike(mID)
     xhr.open('POST', '/like');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-   		// todo
+   		runtimeline();
 	};
 	var body = 'MsgID=' + encodeURIComponent(mID);
 	console.log(body);
@@ -195,6 +196,7 @@ function setLike(mID)
 		setLike(likeId);
 	}
 };    
+
 
 </script>
 </body>
