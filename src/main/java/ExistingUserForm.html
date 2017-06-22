@@ -107,7 +107,16 @@ span:hover {
     document.getElementById("displayDT").innerHTML = Date();
     // AJAX posting x-www-form-urlencoded
 var button = document.getElementById('login');
-button.onclick = function () {
+button.onclick = GoToTimeline;
+document.getElementById("password").onkeypress = function(evt)  {
+   if (evt.keyCode == 13) {
+   GoToTimeline();
+   return false;
+   }
+};
+
+
+function GoToTimeline() {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/sessionID');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

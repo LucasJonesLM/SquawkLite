@@ -57,17 +57,13 @@
           <li id="followMe"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow" class="active"><a href="#section3">Squawkers I follow</a></li>
           <li id="MySquawks"><a href="#section4">My Squawks</a></li>
-          <li><a href="#section4"></a></li>
-          
+          <li id="logout"><a href="#section5">Logout</a></li>         
         </ul><br>
       </div>
-
         <div id="Timeline">
         </div>
-
 <script>
 followers();
-
 function followers(){
     var xr = new XMLHttpRequest();
     xr.open('POST', '/Ifollow');
@@ -108,6 +104,10 @@ function followers(){
         var MyButton = document.getElementById("MySquawks");
     MyButton.onclick = function(){
     	window.location.href = "http://localhost:3000/UserSquawks";
+    };    
+        var logoutButton = document.getElementById("logout");
+    logoutButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/";
     };
     
 </script>

@@ -57,60 +57,16 @@
           <li id="followMe" class="active"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow"><a href="#section3">Squawkers I follow</a></li>
           <li id="MySquawks"><a href="#section4">My Squawks</a></li>
-          <li><a href="#section4"></a></li>
-          
+          <li id="logout"><a href="#section5">Logout</a></li>         
         </ul><br>
       </div>
-
-      <div class="col-sm-9">
-        <br><br>
-        <h4>Post a Squawk</h4>
-          <div class="form-group">
-            <textarea class="form-control" id ="SquawkPost" rows="3" required></textarea>
-          </div>
-          <button id="ajax_button">Squawk</button>
-  
-        <br><br>
-
-        <!-- <p><span class="badge">2</span>Squawk History</p><br>
-
-        <div class="row">
-          <div class="col-sm-2 text-center">
-            <img src="bandmember.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-          </div>
-          <div class="col-sm-10">
-            <h4>Who you Squawked to<small>Time of Squawk</small></h4>
-            <p>Squawk message</p>
-            <br>
-          </div>
-          <div class="col-sm-2 text-center">
-            <img src="bird.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-          </div>
-          <div class="col-sm-10">
-            <h4>2nd Who you squawked to<small>Sep 25, 2015, 8:25 PM</small></h4>
-            <p>Squawk message 2</p>
-            <br>
-            <p><span class="badge">1</span> Comment:</p><br>
-            <div class="row">
-              <div class="col-sm-2 text-center">
-                <img src="bird.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-              </div> -->
-        <!-- </div>
-    </div>
-  </div> -->
-        <div id="Timeline">
+      <div id="Timeline">
         </div>
-
-
-        <footer class="container-fluid">
-          <p>Have you Squawked Today?</p>
-        </footer>
 <script>
 followers();
-
 function followers(){
     var xr = new XMLHttpRequest();
-    xr.open('POST', '/Ifollow');
+    xr.open('POST', '/FollowMeSquawks');
     xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xr.onload = function() {
         if (xr.status === 200) {
@@ -148,6 +104,10 @@ function followers(){
         var MyButton = document.getElementById("MySquawks");
     MyButton.onclick = function(){
     	window.location.href = "http://localhost:3000/UserSquawks";
+    };    
+        var logoutButton = document.getElementById("logout");
+    logoutButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/";
     };
     
 </script>

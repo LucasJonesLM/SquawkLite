@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.google.gson.JsonElement;
+
 public class SquawkDB {
 	private final String url = "jdbc:sqlite:SquawkDB.db";
 	private Connection conn = null;
@@ -231,6 +233,30 @@ public class SquawkDB {
 			pstmt.setInt(1, msgID);
 			pstmt.executeUpdate();
 		}
+	}
+
+	public ArrayList<String> FollowMe(int userID) {
+		String sql = "SELECT users.UserName FROM SquawkFollow "
+				+ "INNER JOIN users ON users.UserID = SquawkFollow.TargetID  " + "WHERE SquawkFollow.TargetID = ? "
+				+ "ORDER BY users.UserName ASC;";
+
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+			stmt.setInt(1, userID);
+			try (ResultSet rs = stmt.executeQuery();) {
+				ArrayList<String> followMeOutput = new ArrayList<String>();
+				// loop through the result set
+				while (rs.next()) {
+					followMeOutput.add(rs.getString("UserName"));
+				}
+				System.out.println("FollowMe arraylist created");
+				return followMeOutput;
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 
 }
