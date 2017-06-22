@@ -34,16 +34,23 @@ public class SquawkDB {
 	public void createNewTable() {
 		// SQLite connection string passed in using String URL
 		// SQL statement for creating a new table
-		String sql = "CREATE TABLE IF NOT EXISTS users (\n" + "	UserName TEXT NOT NULL UNIQUE,\n"
-				+ " UserID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" + " password TEXT NOT NULL,\n"
-				+ " email TEXT NOT NULL,\n" + " MemberSince TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" + ");";
 
-		String sql1 = "CREATE TABLE IF NOT EXISTS SquawkMsg(\n" + " msgID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+		String sql = "CREATE TABLE IF NOT EXISTS users (\n"
+				+ "	UserName TEXT NOT NULL UNIQUE,\n"
+				+ " UserID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
+				+ " password TEXT NOT NULL,\n" + " email TEXT NOT NULL,\n"
+				+ " MemberSince TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+				+ ");";
+
+		String sql1 = "CREATE TABLE IF NOT EXISTS SquawkMsg(\n"
+				+ " msgID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
 				+ " userID INTEGER NOT NULL,\n" + " Msg	TEXT NOT NULL,\n"
 				+ " FOREIGN KEY(userID) REFERENCES users (userID),\n"
 				+ " MsgDT INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" + ");";
 
-		String sql2 = "CREATE TABLE IF NOT EXISTS SquawkFollow(\n" + " FollowingMeID INTEGER NOT NULL,\n"
+
+		String sql2 = "CREATE TABLE IF NOT EXISTS SquawkFollow(\n"
+				+ " FollowingMeID INTEGER NOT NULL,\n"
 				+ " MeFollowingYouID INTEGER NOT NULL,\n"
 				+ " rowID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
 				+ " FollowDT TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" + ");";
@@ -58,8 +65,7 @@ public class SquawkDB {
 		}
 	}
 
-	// insert new user into squawk users table
-	// check user runs before this
+
 	public void insertUser(String UserName, String Password, String email) throws SQLException {
 		String sql = "INSERT INTO users(UserName, password, email) VALUES(?,?,?);";
 		String sql1 = "INSERT INTO SquawkFollow (UserName, UserID, TargetID ) " + "SELECT UserName, UserID, UserID "
@@ -71,6 +77,11 @@ public class SquawkDB {
 			pstmt.setString(2, Password);
 			pstmt.setString(3, email);
 			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+		try (PreparedStatement pstmt2 = conn.prepareStatement(sql1)) {
 			pstmt2.setString(1, UserName);
 			pstmt2.executeUpdate();
 			this.conn.commit();
@@ -78,6 +89,7 @@ public class SquawkDB {
 			System.out.println(e.getMessage());
 			this.conn.rollback();
 			throw e;
+
 		}
 	}
 
@@ -110,7 +122,8 @@ public class SquawkDB {
 		}
 	}
 
-	public SquawkUser authenticateUsers(String userName, String password) throws SQLException {
+	public SquawkUser authenticateUsers(String userName, String password)
+			throws SQLException {
 		String sql = "SELECT UserName FROM users WHERE UserName = ? AND password = ?";
 		String sql2 = "SELECT * FROM users WHERE UserName = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql);
@@ -121,7 +134,9 @@ public class SquawkDB {
 			try (ResultSet rs = stmt.executeQuery();) {
 				if (rs.next()) {
 					ResultSet rsUser = stmt2.executeQuery();
-					SquawkUser nSk = new SquawkUser(rsUser.getString("UserName"), rsUser.getString("password"),
+					SquawkUser nSk = new SquawkUser(
+							rsUser.getString("UserName"),
+							rsUser.getString("password"),
 							rsUser.getString("email"), rsUser.getInt("UserID"));
 					return nSk;
 				} else {
@@ -143,8 +158,11 @@ public class SquawkDB {
 				ArrayList<SquawkMsg> timeLineOutput = new ArrayList<SquawkMsg>();
 				// loop through the result set
 				while (rs.next()) {
-					timeLineOutput
-							.add(new SquawkMsg(rs.getString("Msg"), rs.getString("MsgDT"), rs.getString("UserName")));
+
+					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"),
+							rs.getString("MsgDT"), rs.getString("UserName"),
+							rs.getInt("MsgID")));
+
 				}
 				System.out.println("timeline arraylist created");
 				return timeLineOutput;
@@ -159,7 +177,7 @@ public class SquawkDB {
 
 	// My Squawks
 	public ArrayList<SquawkMsg> renderMySquawks(int userID) {
-		String sql = "SELECT Msg, MsgDT, users.UserName FROM SquawkMsg "
+		String sql = "SELECT Msg, MsgDT, users.UserName, MsgID FROM SquawkMsg "
 				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  "
 				+ "WHERE SquawkMsg.UserID = ? ORDER BY MsgDT DESC;";
 
@@ -170,18 +188,20 @@ public class SquawkDB {
 				// loop through the result set
 				while (rs.next()) {
 					timeLineOutput
-							.add(new SquawkMsg(rs.getString("Msg"), rs.getString("MsgDT"), rs.getString("UserName")));
+							.add(new SquawkMsg(rs.getString("Msg"), rs.getString("MsgDT"), rs.getString("UserName"), rs.getInt("MsgID")));
 				}
 				System.out.println("My Squawk arraylist created");
 				return timeLineOutput;
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}
+
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		return null;
 	}
+
 	
 	public ArrayList<String> Ifollow(int userID) {
 		String sql = "SELECT users.UserName FROM SquawkFollow "
@@ -202,9 +222,29 @@ public class SquawkDB {
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}
+
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		return null;
+	}	
+	
+	public void setLike(int msgID) throws SQLException {
+		String sql = "INSERT INTO LikeCounts(MsgID) VALUES(?);";
+
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, msgID);
+			pstmt.executeUpdate();
+		}
 	}
+	
+	public void counttLike(int msgID) throws SQLException {
+		String sql = "INSERT INTO LikeCounts(MsgID) VALUES(?);";
+
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, msgID);
+			pstmt.executeUpdate();
+		}
+	}
+
 }
