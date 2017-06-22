@@ -143,21 +143,23 @@ public class SquawkDB {
 
 	public ArrayList<SquawkMsg> timeLineSquawks(int userID) {
 
-		String sql = "SELECT Msg, MsgDT, users.UserName FROM SquawkFollow INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  WHERE SquawkFollow.UserID = ? ORDER BY MsgDT DESC;";
+		String sql = "SELECT Msg, MsgDT, MsgID, users.UserName FROM SquawkFollow INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  WHERE SquawkFollow.UserID = ? ORDER BY MsgDT DESC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
-				stmt.setInt(1, userID);
-			try(ResultSet rs = stmt.executeQuery();){
+			stmt.setInt(1, userID);
+			try (ResultSet rs = stmt.executeQuery();) {
 				ArrayList<SquawkMsg> timeLineOutput = new ArrayList<SquawkMsg>();
-			// loop through the result set
-			while (rs.next()) { 
-				timeLineOutput.add(new SquawkMsg (rs.getString("Msg"), rs.getString("MsgDT"), rs.getString("UserName")));
-			} 
-			System.out.println("timeline arraylist created");
-			return timeLineOutput;
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
+				// loop through the result set
+				while (rs.next()) {
+					timeLineOutput.add(new SquawkMsg(rs.getString("Msg"),
+							rs.getString("MsgDT"), rs.getString("UserName"),
+							rs.getInt("MsgID")));
+				}
+				System.out.println("timeline arraylist created");
+				return timeLineOutput;
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -180,4 +182,22 @@ public class SquawkDB {
 			System.out.println(e.getMessage());
 		}
 	}
+
+	public void setLike(int msgID) throws SQLException {
+		String sql = "INSERT INTO LikeCounts(MsgID) VALUES(?);";
+
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, msgID);
+			pstmt.executeUpdate();
+		}
+	}
+	public void counttLike(int msgID) throws SQLException {
+		String sql = "INSERT INTO LikeCounts(MsgID) VALUES(?);";
+
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, msgID);
+			pstmt.executeUpdate();
+		}
+	}
+
 }

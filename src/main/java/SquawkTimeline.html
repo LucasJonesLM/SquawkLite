@@ -8,13 +8,13 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
-  span {
+  .squawkbutton {
     background-color: #4CAF50;
     color: white;
     padding: 5px 20px;
     border: none;
     cursor: pointer;
-    width: 100%;
+    width: 20%;
   }
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 
@@ -68,36 +68,12 @@
           <div class="form-group">
             <textarea class="form-control" id ="SquawkPost" rows="3" required></textarea>
           </div>
-          <button id="ajax_button">Squawk</button>
-  
+          <div>
+          <button id="ajax_button" class="squawkbutton">Squawk</button>
+  		  </div>
         <br><br>
 
-        <!-- <p><span class="badge">2</span>Squawk History</p><br>
-
-        <div class="row">
-          <div class="col-sm-2 text-center">
-            <img src="bandmember.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-          </div>
-          <div class="col-sm-10">
-            <h4>Who you Squawked to<small>Time of Squawk</small></h4>
-            <p>Squawk message</p>
-            <br>
-          </div>
-          <div class="col-sm-2 text-center">
-            <img src="bird.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-          </div>
-          <div class="col-sm-10">
-            <h4>2nd Who you squawked to<small>Sep 25, 2015, 8:25 PM</small></h4>
-            <p>Squawk message 2</p>
-            <br>
-            <p><span class="badge">1</span> Comment:</p><br>
-            <div class="row">
-              <div class="col-sm-2 text-center">
-                <img src="bird.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-              </div> -->
-        <!-- </div>
-    </div>
-  </div> -->
+    
         <div id="Timeline">
         </div>
 
@@ -106,15 +82,15 @@
           <p>Have you Squawked Today?</p>
         </footer>
 <script>
+window.onload = runtimeline();
     // AJAX posting x-www-form-urlencoded
-var button = document.getElementById('ajax_button');
+var button = document.getElementById('ajax_button'); 
 function postSquawk() {
 	console.log("button clicked");
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/createSquawk');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-    	
         if (xhr.responseText === "yes") {
         	runtimeline();
         	document.getElementById('SquawkPost').value = '';
@@ -122,13 +98,14 @@ function postSquawk() {
         
         }
     };   
-    
+   
    var Squawk = document.getElementById('SquawkPost').value;
    console.log(Squawk);
    var body = 'SquawkPost=' + encodeURIComponent(Squawk);
    console.log(body);
    xhr.send(body);
 };
+var button = document.getElementById('ajax_button'); 
 button.onclick = postSquawk;
 document.getElementById("SquawkPost").onkeypress = function(evt)  {
    if (evt.keyCode == 13) {
@@ -145,22 +122,56 @@ function runtimeline(){
     xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xr.onload = function() {
         if (xr.status === 200) {
-        console.log(xr.responseText);
-         var response = JSON.parse(xr.responseText);
-         var div_contain = document.createElement('div');
-         for (var i = 0; i < response.length; i++) {
-         var new_row = document.createElement('div');
-        // new_row.setAttribute("class", "col-sm-2 text-center" );
-         new_row.innerHTML = "Who is Squawking:  " + response[i].AuthorName + "  Your Squawk Message  " +  response[i].Msg + " Squawked Date:  " + response[i].MsgDT;
-         div_contain.appendChild(new_row);
-         }
-         document.getElementById('Timeline').innerHTML = div_contain.innerHTML;
-        }
+	        console.log(xr.responseText);
+	         var response = JSON.parse(xr.responseText);
+	         var div = document.getElementById('Timeline');
+	         
+	         var content = '';
+	         for (var i in response) {
+	         	var squawk = response[i];
+	         	content += `
+		         	<div style="border: 1px solid black;">
+		         		<blockquote>${squawk.Msg}</blockquote>
+		         		</div>
+		         		<button userId="${squawk.AuthorName}" class="squawkbutton">Follow</button>
+		         		<button likeId="${squawk.MsgID}" class="squawkbutton">Like</button>
+		         		<button class="squawkbutton">ReSquawk</button>
+		         		<caption>
+		         		<p></p>
+		         		<div>${squawk.AuthorName}</div>
+		         		<div>${squawk.MsgDT}</div>
+		         		</caption>
+		         		<br>
+		         	</div>
+		        `;
+	         }
+	         div.innerHTML = content;
+	     }
         
     };
-		xr.send();
+    xr.send();
 }
 
+function setLike(mID)
+{
+    console.log("button clicked");
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/like');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+   		// todo
+	};
+	var body = 'MsgID=' + encodeURIComponent(mID);
+	console.log(body);
+	xhr.send(body);  
+};
+	var time = document.getElementById('Timeline');
+	time.onclick = function (evt) {
+	var likeId = evt.target.getAttribute('likeId');
+	if (likeId !== '') {
+		setLike(likeId);
+	}
+};    
 
 
 </script>

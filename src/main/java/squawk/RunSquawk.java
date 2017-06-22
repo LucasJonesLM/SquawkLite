@@ -9,6 +9,8 @@ import org.jtwig.JtwigTemplate;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import spark.Route;
+
 import static spark.Spark.*;
 
 import static spark.Spark.get;
@@ -108,6 +110,15 @@ public class RunSquawk {
 			newSquawk.close();
 			return "yes";
 		});
+		
+	post("/like", (req, res) -> {
+			System.out.println("Like posting");
+			SquawkDB like = new SquawkDB();
+			int msgID = Integer.parseInt(req.queryParams("MsgID"));
+			like.setLike(msgID);
+			like.close();
+			return "";
+		});
 
 
 	post("/timeLineSquawk", (req, res) -> {
@@ -122,4 +133,5 @@ public class RunSquawk {
 		return timelineJson;
 		});
 	}
+
 }
