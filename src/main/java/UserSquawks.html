@@ -57,7 +57,7 @@
           <li id="followMe"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow"><a href="#section3">Squawkers I follow</a></li>
           <li id="MySquawks" class="active"><a href="#section4">My Squawks</a></li>
-          <li><a href="#section4"></a></li>
+          <li id="logout"><a href="#section5">Logout</a></li>
           
         </ul><br>
       </div>
@@ -182,6 +182,11 @@ function mySquawks(){
         var MyButton = document.getElementById("MySquawks");
     MyButton.onclick = function(){
     	window.location.href = "http://localhost:3000/UserSquawks";
+    };
+    
+        var logoutButton = document.getElementById("logout");
+    logoutButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/";
     };
     
 </script>

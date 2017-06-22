@@ -28,16 +28,9 @@ public class RunSquawk {
 
 		get("/", (req, res) -> {
 			System.out.println("request made");
-
-			// req.session().attribute("userid");
-			// req.session().attribute("userid", 67);
-			//
-			// int id = req.session().attribute("userid");
-
-			JtwigTemplate template = JtwigTemplate
-					.classpathTemplate("/ExistingUserForm.html");
+			req.session().removeAttribute("user");
+			JtwigTemplate template = JtwigTemplate.classpathTemplate("/ExistingUserForm.html");
 			JtwigModel model = JtwigModel.newModel().with("users", users);
-
 			return template.render(model);
 		});
 
@@ -48,8 +41,7 @@ public class RunSquawk {
 				res.redirect("/");
 				return "login";
 			}
-			JtwigTemplate template = JtwigTemplate
-					.classpathTemplate("/SquawkTimeline.html");
+			JtwigTemplate template = JtwigTemplate.classpathTemplate("/SquawkTimeline.html");
 			JtwigModel model = JtwigModel.newModel();
 			return template.render(model);
 		});
@@ -65,8 +57,6 @@ public class RunSquawk {
 				return "Invalid User Name and Password";
 			}
 			req.session().attribute("user", u);
-			System.out.println("session success!");
-			System.out.println(u.toString());
 			sessionReq.close();
 			return "Yes";
 		});
@@ -191,6 +181,18 @@ public class RunSquawk {
 		JtwigModel model = JtwigModel.newModel();
 		return template.render(model);
 	});
+	
+	post("/FollowMeSquawks", (req, res) -> {
+		System.out.println("run my Squawks");
+		SquawkUser user = req.session().attribute("user");
+		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
+		Gson gson = new Gson();
+		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
+		String timelineJson = gson.toJson(timeLineSquawk.FollowMe(user.userID));
+		timeLineSquawk.close();
+		System.out.println("send Gson");
+		return timelineJson;
+		});
 	}
 
 }
