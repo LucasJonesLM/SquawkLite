@@ -115,5 +115,65 @@ public class RunSquawk {
 		System.out.println("send Gson");
 		return timelineJson;
 		});
+	
+	post("/MySquawks", (req, res) -> {
+		System.out.println("run my Squawks");
+		SquawkUser user = req.session().attribute("user");
+		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
+		Gson gson = new Gson();
+		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
+		String timelineJson = gson.toJson(timeLineSquawk.renderMySquawks(user.userID));
+		timeLineSquawk.close();
+		System.out.println("send Gson");
+		return timelineJson;
+		});
+	
+	get("/UserSquawks", (req, res) -> {
+		System.out.println("request made");
+		SquawkUser user = req.session().attribute("user");
+		if(user == null){
+			res.redirect("/");
+			return "login";
+		}
+		JtwigTemplate template = JtwigTemplate.classpathTemplate("/UserSquawks.html");
+		JtwigModel model = JtwigModel.newModel();
+		return template.render(model);
+	});
+	
+	get("/IfollowSquawks", (req, res) -> {
+		System.out.println("request made");
+		SquawkUser user = req.session().attribute("user");
+		if(user == null){
+			res.redirect("/");
+			return "login";
+		}
+		JtwigTemplate template = JtwigTemplate.classpathTemplate("/IfollowSquawk.html");
+		JtwigModel model = JtwigModel.newModel();
+		return template.render(model);
+	});
+	
+	post("/Ifollow", (req, res) -> {
+		System.out.println("run my Squawks");
+		SquawkUser user = req.session().attribute("user");
+		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
+		Gson gson = new Gson();
+		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
+		String timelineJson = gson.toJson(timeLineSquawk.Ifollow(user.userID));
+		timeLineSquawk.close();
+		System.out.println("send Gson");
+		return timelineJson;
+		});
+	
+	get("/FollowMe", (req, res) -> {
+		System.out.println("request made");
+		SquawkUser user = req.session().attribute("user");
+		if(user == null){
+			res.redirect("/");
+			return "login";
+		}
+		JtwigTemplate template = JtwigTemplate.classpathTemplate("/FollowMeSquawk.html");
+		JtwigModel model = JtwigModel.newModel();
+		return template.render(model);
+	});
 	}
 }

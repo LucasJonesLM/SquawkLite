@@ -53,12 +53,10 @@
       <div class="col-sm-3 sidenav">
         <h4>Welcome to Squawk</h4>
         <ul class="nav nav-pills nav-stacked">
-          <li id="home" class="active"><a href="#section1">Home</a></li>
+          <li id="home"><a href="#section1">Home</a></li>
           <li id="followMe"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow"><a href="#section3">Squawkers I follow</a></li>
-          <li id="MySquawks"><a href="#section4">My Squawks</a></li>
-          <li><a href="#section4"></a></li>
-          
+          <li id="MySquawks"><a href="#section4">My Squawks</a></li>        
         </ul><br>
       </div>
 
@@ -106,7 +104,7 @@
           <p>Have you Squawked Today?</p>
         </footer>
 <script>
-runtimeline();
+mySquawks();
     // AJAX posting x-www-form-urlencoded
 var button = document.getElementById('ajax_button');
 function postSquawk() {
@@ -117,7 +115,7 @@ function postSquawk() {
     xhr.onload = function() {
     	
         if (xhr.responseText === "yes") {
-        	runtimeline();
+        	mySquawks();
         	document.getElementById('SquawkPost').value = '';
         	console.log("this is the response text " + xhr.responseText);
         
@@ -138,13 +136,12 @@ document.getElementById("SquawkPost").onkeypress = function(evt)  {
    return false;
    }
 };
+var go = setInterval(function(){ mySquawks() }, 20000);
 
-var go = setInterval(function(){ runtimeline() }, 20000);
-
-function runtimeline(){
+function mySquawks(){
 	console.log("timeline activated");
     var xr = new XMLHttpRequest();
-    xr.open('POST', '/timeLineSquawk');
+    xr.open('POST', '/MySquawks');
     xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xr.onload = function() {
         if (xr.status === 200) {
@@ -164,13 +161,13 @@ function runtimeline(){
 		xr.send();
 }
 
-// Redirect to My Squawks page.
+// Redirect to Timeline page.
     var homeButton = document.getElementById("home");
     homeButton.onclick = function(){
     	window.location.href = "http://localhost:3000/SquawkTimeline";
     };
     
-          var IfollowButton = document.getElementById("Ifollow");
+         var IfollowButton = document.getElementById("Ifollow");
     IfollowButton.onclick = function(){
     	window.location.href = "http://localhost:3000/IfollowSquawks";
     };
