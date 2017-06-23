@@ -193,6 +193,29 @@ public class RunSquawk {
 		System.out.println("send Gson");
 		return timelineJson;
 		});
+	
+	get("/PopularSquawkers", (req, res) -> {
+		System.out.println("request made");
+		SquawkUser user = req.session().attribute("user");
+		if(user == null){
+			res.redirect("/");
+			return "login";
+		}
+		JtwigTemplate template = JtwigTemplate.classpathTemplate("/PopularSquawkers.html");
+		JtwigModel model = JtwigModel.newModel();
+		return template.render(model);
+	});
+	
+	post("/SquawkerList", (req, res) -> {
+		System.out.println("Squawker List");
+		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
+		Gson gson = new Gson();
+		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
+		String SquawkersJson = gson.toJson(timeLineSquawk.SquawkerList());
+		timeLineSquawk.close();
+		System.out.println("send Gson");
+		return SquawkersJson;
+		});
 	}
 
 }

@@ -173,11 +173,13 @@ public class SquawkDB {
 
 	// My Squawks
 	public ArrayList<SquawkMsg> renderMySquawks(int userID) {
-		String sql = "SELECT Msg, MsgDT, users.UserName, msgID, sum(LikeCT) as Likes FROM SquawkMsg "
-				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID  "
-				+ "INNER JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID "
+		String sql = "SELECT Msg, MsgDT, users.UserName, SquawkMsg.msgID, sum(LikeCT) AS Likes FROM SquawkFollow "
+				+ "INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID "
+				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID "
+				+ "LEFT JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.MsgID "
 				+ "WHERE SquawkMsg.userID = ? "
-				+ "GROUP BY Msg, MsgDT, users.UserName, msgID ORDER BY MsgDT DESC;";
+				+ "GROUP BY Msg, MsgDT, users.UserName, SquawkMsg.msgID "
+				+ "ORDER BY MsgDT DESC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
 			stmt.setInt(1, userID);
@@ -266,6 +268,29 @@ public class SquawkDB {
 				}
 				System.out.println("FollowMe arraylist created");
 				return followMeOutput;
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
+	public ArrayList<String> SquawkerList() {
+		String sql = "SELECT users.UserName FROM SquawkMsg "
+				+ "INNER JOIN users ON users.UserID = SquawkMsg.userID  "
+				+ "GROUP BY users.UserName "
+				+ "ORDER BY users.UserName ASC;";
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+			try (ResultSet rs = stmt.executeQuery();) {
+				ArrayList<String> SquawkersOutput = new ArrayList<String>();
+				// loop through the result set
+				while (rs.next()) {
+					SquawkersOutput.add(rs.getString("UserName"));
+				}
+				System.out.println("Pop Squawkers arraylist created");
+				return SquawkersOutput;
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}

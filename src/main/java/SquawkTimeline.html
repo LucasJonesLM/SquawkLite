@@ -57,7 +57,8 @@
           <li id="followMe"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow"><a href="#section3">Squawkers I follow</a></li>
           <li id="MySquawks"><a href="#section4">My Squawks</a></li>
-          <li id="logout"><a href="#section5">Logout</a></li>
+          <li id="Squawkers"><a href="#section5">Popular Squawkers</a></li>
+          <li id="logout"><a href="#section6">Logout</a></li>
           
         </ul><br>
       </div>
@@ -135,8 +136,8 @@ function runtimeline(){
 		         		</div>
 		         		<button userId="${squawk.AuthorName}" class="squawkbutton">Follow</button>
 		         		<button likeId="${squawk.MsgID}" class="squawkbutton">Like</button>
-		         		<button class="squawkbutton">ReSquawk</button>
-		         		<span>${squawk.Likes}</span>
+		         		<button msgId="${squawk.MsgID}" class="squawkbutton">ReSquawk</button>
+		         		<span>Number of likes: ${squawk.Likes}</span>
 		         		<caption>
 		         		<p></p>
 		         		<div>${squawk.AuthorName}</div>
@@ -177,6 +178,10 @@ function runtimeline(){
         var logoutButton = document.getElementById("logout");
     logoutButton.onclick = function(){
     	window.location.href = "http://localhost:3000/";
+    };
+                var SquawkersButton = document.getElementById("Squawkers");
+    SquawkersButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/PopularSquawkers";
     };
 
 function setLike(mID)
