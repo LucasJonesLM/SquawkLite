@@ -54,20 +54,20 @@
         <h4>Welcome to Squawk</h4>
         <ul class="nav nav-pills nav-stacked">
           <li id="home"><a href="#section1">Home</a></li>
-          <li id="followMe" class="active"><a href="#section2">Squawkers who follow me</a></li>
+          <li id="followMe"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow"><a href="#section3">Squawkers I follow</a></li>
           <li id="MySquawks"><a href="#section4">My Squawks</a></li>
-          <li id="Squawkers"><a href="#section5">Popular Squawkers</a></li>
+          <li id="Squawkers" class="active"><a href="#section5">Popular Squawkers</a></li>
           <li id="logout"><a href="#section6">Logout</a></li>         
         </ul><br>
       </div>
-      <div id="Timeline">
+        <div id="Timeline">
         </div>
 <script>
-followers();
-function followers(){
+squawkers();
+function squawkers(){
     var xr = new XMLHttpRequest();
-    xr.open('POST', '/FollowMeSquawks');
+    xr.open('POST', '/SquawkerList');
     xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xr.onload = function() {
         if (xr.status === 200) {
@@ -92,7 +92,7 @@ function followers(){
     	window.location.href = "http://localhost:3000/SquawkTimeline";
     };
     
-          var IfollowButton = document.getElementById("Ifollow");
+         var IfollowButton = document.getElementById("Ifollow");
     IfollowButton.onclick = function(){
     	window.location.href = "http://localhost:3000/IfollowSquawks";
     };
@@ -110,7 +110,7 @@ function followers(){
     logoutButton.onclick = function(){
     	window.location.href = "http://localhost:3000/";
     };
-                var SquawkersButton = document.getElementById("Squawkers");
+            var SquawkersButton = document.getElementById("Squawkers");
     SquawkersButton.onclick = function(){
     	window.location.href = "http://localhost:3000/PopularSquawkers";
     };

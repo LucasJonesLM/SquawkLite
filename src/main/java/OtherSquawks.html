@@ -8,14 +8,15 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
-  span {
+    .squawkbutton {
     background-color: #4CAF50;
     color: white;
     padding: 5px 20px;
     border: none;
     cursor: pointer;
-    width: 100%;
+    width: 20%;
   }
+
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 
     .row.content {
@@ -56,47 +57,14 @@
           <li id="home"><a href="#section1">Home</a></li>
           <li id="followMe"><a href="#section2">Squawkers who follow me</a></li>
           <li id="Ifollow"><a href="#section3">Squawkers I follow</a></li>
-          <li id="MySquawks"><a href="#section4">My Squawks</a></li> 
-          <li id="logout"><a href="#section5">Logout</a></li>       
+          <li id="MySquawks"><a href="#section4">My Squawks</a></li>
+          <li id="Squawkers"><a href="#section5">Popular Squawkers</a></li>
+          <li id="logout"><a href="#section6">Logout</a></li>
+          
         </ul><br>
       </div>
 
-      <div class="col-sm-9">
-        <br><br>
-        <h4>Post a Squawk</h4>
-          <div class="form-group">
-            <textarea class="form-control" id ="SquawkPost" rows="3" required></textarea>
-          </div>
-          <button id="ajax_button">Squawk</button>
   
-        <br><br>
-
-        <!-- <p><span class="badge">2</span>Squawk History</p><br>
-
-        <div class="row">
-          <div class="col-sm-2 text-center">
-            <img src="bandmember.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-          </div>
-          <div class="col-sm-10">
-            <h4>Who you Squawked to<small>Time of Squawk</small></h4>
-            <p>Squawk message</p>
-            <br>
-          </div>
-          <div class="col-sm-2 text-center">
-            <img src="bird.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-          </div>
-          <div class="col-sm-10">
-            <h4>2nd Who you squawked to<small>Sep 25, 2015, 8:25 PM</small></h4>
-            <p>Squawk message 2</p>
-            <br>
-            <p><span class="badge">1</span> Comment:</p><br>
-            <div class="row">
-              <div class="col-sm-2 text-center">
-                <img src="bird.jpg" class="img-circle" height="65" width="65" alt="Avatar">
-              </div> -->
-        <!-- </div>
-    </div>
-  </div> -->
         <div id="Timeline">
         </div>
 
@@ -106,38 +74,6 @@
         </footer>
 <script>
 mySquawks();
-    // AJAX posting x-www-form-urlencoded
-var button = document.getElementById('ajax_button');
-function postSquawk() {
-	console.log("button clicked");
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/createSquawk');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-    	
-        if (xhr.responseText === "yes") {
-        	mySquawks();
-        	document.getElementById('SquawkPost').value = '';
-        	console.log("this is the response text " + xhr.responseText);
-        
-        }
-    };
-    
-    
-   var Squawk = document.getElementById('SquawkPost').value;
-   console.log(Squawk);
-   var body = 'SquawkPost=' + encodeURIComponent(Squawk);
-   console.log(body);
-   xhr.send(body);
-};
-button.onclick = postSquawk;
-document.getElementById("SquawkPost").onkeypress = function(evt)  {
-   if (evt.keyCode == 13) {
-   postSquawk();
-   return false;
-   }
-};
-var go = setInterval(function(){ mySquawks() }, 20000);
 
 function mySquawks(){
 	console.log("timeline activated");
@@ -146,20 +82,29 @@ function mySquawks(){
     xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xr.onload = function() {
         if (xr.status === 200) {
-        console.log(xr.responseText);
-         var response = JSON.parse(xr.responseText);
-         var div_contain = document.createElement('div');
-         for (var i = 0; i < response.length; i++) {
-         var new_row = document.createElement('div');
-        // new_row.setAttribute("class", "col-sm-2 text-center" );
-         new_row.innerHTML = "Who is Squawking:  " + response[i].AuthorName + "  Your Squawk Message  " +  response[i].Msg + " Squawked Date:  " + response[i].MsgDT;
-         div_contain.appendChild(new_row);
-         }
-         document.getElementById('Timeline').innerHTML = div_contain.innerHTML;
-        }
+	         var response = JSON.parse(xr.responseText);
+	         var div = document.getElementById('Timeline');
+	         var content = '';
+	         for (var i in response) {
+	         	var squawk = response[i];
+	         	content += `
+		         	<div style="border: 1px solid black;">
+		         		<blockquote>${squawk.Msg}</blockquote>
+		         		</div>
+		         		<span>Number of likes: ${squawk.Likes}</span>
+		         		<caption>
+		         		<div>${squawk.AuthorName}</div>
+		         		<div>${squawk.MsgDT}</div>
+		         		</caption>
+		         		<br>
+		         	</div>
+		        `;
+	         }
+	         div.innerHTML = content;
+	     }
         
     };
-		xr.send();
+    xr.send();
 }
 
 // Redirect to Timeline page.
@@ -168,7 +113,7 @@ function mySquawks(){
     	window.location.href = "http://localhost:3000/SquawkTimeline";
     };
     
-         var IfollowButton = document.getElementById("Ifollow");
+          var IfollowButton = document.getElementById("Ifollow");
     IfollowButton.onclick = function(){
     	window.location.href = "http://localhost:3000/IfollowSquawks";
     };
@@ -181,10 +126,15 @@ function mySquawks(){
         var MyButton = document.getElementById("MySquawks");
     MyButton.onclick = function(){
     	window.location.href = "http://localhost:3000/UserSquawks";
-    };    
+    };
+    
         var logoutButton = document.getElementById("logout");
     logoutButton.onclick = function(){
     	window.location.href = "http://localhost:3000/";
+    };
+                var SquawkersButton = document.getElementById("Squawkers");
+    SquawkersButton.onclick = function(){
+    	window.location.href = "http://localhost:3000/PopularSquawkers";
     };
     
 </script>
