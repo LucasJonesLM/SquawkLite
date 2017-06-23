@@ -158,6 +158,18 @@ public class RunSquawk {
 		return template.render(model);
 	});
 	
+	get("/user/:username", (req, res)-> {
+		String username = req.params(":username");
+		System.out.println(username);
+		SquawkDB timeLineSquawk = new SquawkDB(); //db connection
+		// call db connection timeLineSquawk call method timeLineSquawks pass (uID)
+		ArrayList<SquawkMsg> squawk = timeLineSquawk.otherSquawks(username);
+		System.out.println(squawk.toString());
+		JtwigTemplate template = JtwigTemplate.classpathTemplate("/OtherSquawks.html");
+		JtwigModel model = JtwigModel.newModel().with("squawk", squawk);
+		return template.render(model);
+	});
+	
 	post("/Ifollow", (req, res) -> {
 		System.out.println("run my Squawks");
 		SquawkUser user = req.session().attribute("user");

@@ -66,6 +66,19 @@
 
   
         <div id="Timeline">
+        		{% for s in squawk %}
+					<div>
+					    <div style="border: 1px solid black;">
+		         		<blockquote>{{s.Msg}}</blockquote>
+		         		</div>
+					    <span>Number of likes: {{s.Likes}}</span>
+		         		<caption>
+		         		<div>{{s.AuthorName}}</div>
+		         		<div>{{s.MsgDT}}</div>
+		         		</caption>
+		         		<br>
+					</div>
+				{% endfor %}
         </div>
 
 
@@ -73,39 +86,7 @@
           <p>Have you Squawked Today?</p>
         </footer>
 <script>
-mySquawks();
 
-function mySquawks(){
-	console.log("timeline activated");
-    var xr = new XMLHttpRequest();
-    xr.open('POST', '/MySquawks');
-    xr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xr.onload = function() {
-        if (xr.status === 200) {
-	         var response = JSON.parse(xr.responseText);
-	         var div = document.getElementById('Timeline');
-	         var content = '';
-	         for (var i in response) {
-	         	var squawk = response[i];
-	         	content += `
-		         	<div style="border: 1px solid black;">
-		         		<blockquote>${squawk.Msg}</blockquote>
-		         		</div>
-		         		<span>Number of likes: ${squawk.Likes}</span>
-		         		<caption>
-		         		<div>${squawk.AuthorName}</div>
-		         		<div>${squawk.MsgDT}</div>
-		         		</caption>
-		         		<br>
-		         	</div>
-		        `;
-	         }
-	         div.innerHTML = content;
-	     }
-        
-    };
-    xr.send();
-}
 
 // Redirect to Timeline page.
     var homeButton = document.getElementById("home");

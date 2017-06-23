@@ -15,6 +15,12 @@ public class SquawkMsg {
 		this.MsgID = MsgID;
 		this.Likes = Likes;
 	}
+
+	@Override
+	public String toString() {
+		return "SquawkMsg [Msg=" + Msg + ", MsgDT=" + MsgDT + ", AuthorName=" + AuthorName + ", MsgID=" + MsgID
+				+ ", Likes=" + Likes + "]";
+	}
 	
 	
 	

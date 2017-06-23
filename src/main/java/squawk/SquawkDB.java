@@ -300,4 +300,34 @@ public class SquawkDB {
 		return null;
 	}
 
+	public ArrayList<SquawkMsg> otherSquawks(String username) {
+		String sql = "SELECT Msg, MsgDT, users.UserName, SquawkMsg.msgID, sum(LikeCT) AS Likes FROM SquawkFollow "
+				+ "INNER JOIN SquawkMsg ON SquawkFollow.TargetID = SquawkMsg.userID "
+				+ "INNER JOIN users ON users.UserID = SquawkMsg.AuthorID "
+				+ "LEFT JOIN LikeCounts ON SquawkMsg.msgID = LikeCounts.msgID "
+				+ "WHERE SquawkFollow.UserName = ? "
+				+ "GROUP BY Msg, MsgDT, users.UserName, SquawkMsg.msgID "
+				+ "ORDER BY MsgDT DESC;";
+
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+			stmt.setString(1, username);
+			try (ResultSet rs = stmt.executeQuery();) {
+				ArrayList<SquawkMsg> OtherOutput = new ArrayList<SquawkMsg>();
+				// loop through the result set
+				while (rs.next()) {
+					OtherOutput.add(new SquawkMsg(rs.getString("Msg"),
+							rs.getString("MsgDT"), rs.getString("UserName"),
+							rs.getInt("MsgID"), rs.getInt("Likes")));
+				}
+				System.out.println("Other User arraylist created");
+				return OtherOutput;
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
 }

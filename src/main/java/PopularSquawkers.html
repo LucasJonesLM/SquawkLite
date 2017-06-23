@@ -16,6 +16,10 @@
     cursor: pointer;
     width: 100%;
   }
+  .user:hover {
+    cursor: pointer;
+    color: blue;
+  }
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 
     .row.content {
@@ -73,15 +77,19 @@ function squawkers(){
         if (xr.status === 200) {
         console.log(xr.responseText);
          var response = JSON.parse(xr.responseText);
-         var div_contain = document.createElement('div');
-         for (var i = 0; i < response.length; i++) {
-         var new_row = document.createElement('div');
-         new_row.innerHTML = response[i];
-         div_contain.appendChild(new_row);
-         }
-         document.getElementById('Timeline').innerHTML = div_contain.innerHTML;
-        }
-        
+     var div = document.getElementById('Timeline');
+	         var content = '';
+	         for (var i in response) {
+	         	var squawk = response[i];
+	         	content += `
+		         		
+		         		<div username="${squawk}" class="user">${squawk}</div>
+		         		<br>
+		         	
+		        `;
+	         }
+	         div.innerHTML = content;
+	     }  
     };
 		xr.send();
 }
@@ -114,6 +122,18 @@ function squawkers(){
     SquawkersButton.onclick = function(){
     	window.location.href = "http://localhost:3000/PopularSquawkers";
     };
+    
+    function seeUser(userName)
+{
+    window.location.href = "http://localhost:3000/user/" + userName; 
+};
+	var time = document.getElementById('Timeline');
+	time.onclick = function (evt) {
+	var userName = evt.target.getAttribute('username');
+	if (userName !== '') {
+		seeUser(userName);
+	}
+}; 
     
 </script>
 </body>
