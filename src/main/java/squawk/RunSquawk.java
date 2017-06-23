@@ -237,8 +237,8 @@ public class RunSquawk {
 			String author = req.queryParams("userId");
 			SquawkUser user = req.session().attribute("user");
 			followers.setFollow(user.userID, author);
-			followers.close();
 			System.out.println("send follower Gson");
+			followers.close();
 			return "";
 		});
 	}

@@ -16,6 +16,14 @@
     cursor: pointer;
     width: 100%;
   }
+   .squawkbutton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 20px;
+    border: none;
+    cursor: pointer;
+    width: 10%;
+  }
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 
     .row.content {
@@ -64,7 +72,7 @@
         <div id="Timeline">
         </div>
 <script>
-squawkers();
+window.onload = squawkers();
 function squawkers(){
     var xr = new XMLHttpRequest();
     xr.open('POST', '/SquawkerList');
@@ -73,13 +81,19 @@ function squawkers(){
         if (xr.status === 200) {
         console.log(xr.responseText);
          var response = JSON.parse(xr.responseText);
-         var div_contain = document.createElement('div');
-         for (var i = 0; i < response.length; i++) {
-         var new_row = document.createElement('div');
-         new_row.innerHTML = response[i];
-         div_contain.appendChild(new_row);
+         var div = document.getElementById('Timeline');
+         var content = '';
+         for (var i in response) {
+         var popSquawk = response[i];
+         content += `
+         <div>
+         <blockquote>${popSquawk}
+         <button userId="${popSquawk}" class="squawkbutton">Follow</button>
+         </blockquote>
+         </div>
+          `;
          }
-         document.getElementById('Timeline').innerHTML = div_contain.innerHTML;
+          div.innerHTML = content;
         }
         
     };
@@ -114,6 +128,27 @@ function squawkers(){
     SquawkersButton.onclick = function(){
     	window.location.href = "http://localhost:3000/PopularSquawkers";
     };
+    
+function setFollower(fID){
+	console.log("button clicked");
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/Followers');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+   	//Nothing 
+	};
+	var body = 'FollowerID=' + encodeURIComponent(fID);
+	console.log(body);
+	xhr.send(body);  
+};
+
+	var time = document.getElementById('Timeline');
+	time.onclick = function (evt) {
+	var followerId = evt.target.getAttribute('userId');
+	if (followerId !== '') {
+		setFollower(followerId);
+	}
+};
     
 </script>
 </body>

@@ -287,7 +287,7 @@ public class SquawkDB {
 	}
 
 	public void setFollow(int userID, String author) {
-		// TODO
+		System.out.println("Set Follow Activated");
 		String sql = "INSERT INTO SquawkFollow(UserID, UserName, TargetID) "
 				+ "SELECT users.UserName, users.UserID, target.UserID from users "
 				+ "INNER JOIN users as target " + "WHERE users.UserID = ? "
