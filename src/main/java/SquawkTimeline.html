@@ -136,7 +136,7 @@ function runtimeline(){
 		         		<button userId="${squawk.AuthorName}" class="squawkbutton">Follow</button>
 		         		<button likeId="${squawk.MsgID}" class="squawkbutton">Like</button>
 		         		<button class="squawkbutton">ReSquawk</button>
-		         		<span>${squawk.Likes}</span>
+		         		<span>Number of Likes: ${squawk.Likes}</span>
 		         		<caption>
 		         		<p></p>
 		         		<div>${squawk.AuthorName}</div>
@@ -200,6 +200,26 @@ function setLike(mID)
 	}
 };    
 
+function setFollower(fID){
+console.log("button clicked");
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/like');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+   	//Nothing 
+	};
+	var body = 'FollowerID=' + encodeURIComponent(fID);
+	console.log(body);
+	xhr.send(body);  
+};
+
+	var time = document.getElementById('Timeline');
+	time.onclick = function (evt) {
+	var followerId = evt.target.getAttribute('userId');
+	if (followerId !== '') {
+		setFollower(followerId);
+	}
+};
 
 </script>
 </body>

@@ -253,7 +253,8 @@ public class SquawkDB {
 
 	public ArrayList<String> FollowMe(int userID) {
 		String sql = "SELECT users.UserName FROM SquawkFollow "
-				+ "INNER JOIN users ON users.UserID = SquawkFollow.TargetID  " + "WHERE SquawkFollow.TargetID = ? "
+				+ "INNER JOIN users ON users.UserID = SquawkFollow.TargetID  "
+				+ "WHERE SquawkFollow.TargetID = ? "
 				+ "ORDER BY users.UserName ASC;";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
@@ -274,5 +275,26 @@ public class SquawkDB {
 		}
 		return null;
 	}
+	
+	public void setFollow(int userID, String author) {
+		//TODO
+		String sql = "INSERT INTO SquawkFollow(UserID, UserName, TargetID) "
+				+ "SELECT users.UserName, users.UserID, target.UserID from users "
+				+ "INNER JOIN users as target " 
+				+ "WHERE users.UserID = ? " 
+				+ "AND target.UserName = ?;";
+		try (PreparedStatement stmt = conn.prepareStatement(sql);) {
+			stmt.setInt(1, userID);
+			stmt.setString(2, author);
+			try (ResultSet rs = stmt.executeQuery();){
+				
+			}
+		
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
 }
+}
+	
