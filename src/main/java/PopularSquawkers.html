@@ -16,9 +16,19 @@
     cursor: pointer;
     width: 100%;
   }
+
   .user:hover {
     cursor: pointer;
     color: blue;
+   }
+    
+   .squawkbutton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 20px;
+    border: none;
+    cursor: pointer;
+    width: 10%;
   }
     /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 
@@ -68,7 +78,7 @@
         <div id="Timeline">
         </div>
 <script>
-squawkers();
+window.onload = squawkers();
 function squawkers(){
     var xr = new XMLHttpRequest();
     xr.open('POST', '/SquawkerList');
@@ -77,19 +87,22 @@ function squawkers(){
         if (xr.status === 200) {
         console.log(xr.responseText);
          var response = JSON.parse(xr.responseText);
-     var div = document.getElementById('Timeline');
-	         var content = '';
-	         for (var i in response) {
-	         	var squawk = response[i];
-	         	content += `
-		         		
-		         		<div username="${squawk}" class="user">${squawk}</div>
-		         		<br>
-		         	
-		        `;
-	         }
-	         div.innerHTML = content;
-	     }  
+         var div = document.getElementById('Timeline');
+         var content = '';
+         for (var i in response) {
+         var popSquawk = response[i];
+         content += `
+         <caption>
+         <div style="border: .5px solid black;">
+         <div username="${popSquawk}" class="user">${popSquawk}</div>
+         <button userId="${popSquawk}" class="squawkbutton">Follow</button> 
+         </div>
+         </caption>
+          `;
+         }
+          div.innerHTML = content;
+        }
+        
     };
 		xr.send();
 }
@@ -125,15 +138,39 @@ function squawkers(){
     
     function seeUser(userName)
 {
-    window.location.href = "http://localhost:3000/user/" + userName; 
+	console.log(userName);
+    window.location.href = "http://localhost:3000/user/" + userName;
+    userName = ''; 
 };
+	var followerId = '';
+	var userName = '';
+	
 	var time = document.getElementById('Timeline');
 	time.onclick = function (evt) {
-	var userName = evt.target.getAttribute('username');
+	userName = evt.target.getAttribute('username');
 	if (userName !== '') {
+		console.log("UserName activated");
 		seeUser(userName);
 	}
+	followerId = evt.target.getAttribute('userId');
+	if (followerId !== '') {
+		console.log("followerId= " + followerId);
+		setFollower(followerId);
+	}
 }; 
+
+function setFollower(fID){
+	console.log(fID);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/Followers');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+   	//Nothing 
+	};
+	var body = 'FollowerID=' + encodeURIComponent(fID);
+	console.log(body);
+	xhr.send(body);  
+};
     
 </script>
 </body>

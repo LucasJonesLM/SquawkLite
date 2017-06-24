@@ -78,7 +78,9 @@
         <div id="Timeline">
         </div>
 
-
+</div>
+</div>
+</div>
         <footer class="container-fluid">
           <p>Have you Squawked Today?</p>
         </footer>
@@ -134,7 +136,6 @@ function runtimeline(){
 		         	<div style="border: 1px solid black;">
 		         		<blockquote>${squawk.Msg}</blockquote>
 		         		</div>
-		         		<button userId="${squawk.AuthorName}" class="squawkbutton">Follow</button>
 		         		<button likeId="${squawk.MsgID}" class="squawkbutton">Like</button>
 		         		<span>Number of likes: ${squawk.Likes}</span>
 		         		<caption>
@@ -203,6 +204,7 @@ function setLike(mID)
 		setLike(likeId);
 	}
 };    
+
 
 
 </script>

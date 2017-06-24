@@ -22,14 +22,14 @@ import java.util.ArrayList;
 public class RunSquawk {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		port(3000);
 		ArrayList<SquawkUser> users = new ArrayList<SquawkUser>();
 
 		get("/", (req, res) -> {
 			System.out.println("request made");
 			req.session().removeAttribute("user");
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/ExistingUserForm.html");
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/ExistingUserForm.html");
 			JtwigModel model = JtwigModel.newModel().with("users", users);
 			return template.render(model);
 		});
@@ -41,7 +41,8 @@ public class RunSquawk {
 				res.redirect("/");
 				return "login";
 			}
-			JtwigTemplate template = JtwigTemplate.classpathTemplate("/SquawkTimeline.html");
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/SquawkTimeline.html");
 			JtwigModel model = JtwigModel.newModel();
 			return template.render(model);
 		});
@@ -100,8 +101,8 @@ public class RunSquawk {
 			newSquawk.close();
 			return "yes";
 		});
-		
-	post("/like", (req, res) -> {
+
+		post("/like", (req, res) -> {
 			System.out.println("Like posting");
 			SquawkDB like = new SquawkDB();
 			int msgID = Integer.parseInt(req.queryParams("MsgID"));
@@ -228,6 +229,108 @@ public class RunSquawk {
 		System.out.println("send Gson");
 		return SquawkersJson;
 		});
-	}
 
+		get("/UserSquawks", (req, res) -> {
+			System.out.println("request made");
+			SquawkUser user = req.session().attribute("user");
+			if (user == null) {
+				res.redirect("/");
+				return "login";
+			}
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/UserSquawks.html");
+			JtwigModel model = JtwigModel.newModel();
+			return template.render(model);
+		});
+
+		get("/IfollowSquawks", (req, res) -> {
+			System.out.println("request made");
+			SquawkUser user = req.session().attribute("user");
+			if (user == null) {
+				res.redirect("/");
+				return "login";
+			}
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/IfollowSquawk.html");
+			JtwigModel model = JtwigModel.newModel();
+			return template.render(model);
+		});
+
+		post("/Ifollow", (req, res) -> {
+			System.out.println("run my Squawks");
+			SquawkUser user = req.session().attribute("user");
+			SquawkDB timeLineSquawk = new SquawkDB(); // db connection
+			Gson gson = new Gson();
+			// call db connection timeLineSquawk call method timeLineSquawks
+			// pass (uID)
+			String timelineJson = gson
+					.toJson(timeLineSquawk.Ifollow(user.userID));
+			timeLineSquawk.close();
+			System.out.println("send Gson");
+			return timelineJson;
+		});
+
+		get("/FollowMe", (req, res) -> {
+			System.out.println("request made");
+			SquawkUser user = req.session().attribute("user");
+			if (user == null) {
+				res.redirect("/");
+				return "login";
+			}
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/FollowMeSquawk.html");
+			JtwigModel model = JtwigModel.newModel();
+			return template.render(model);
+		});
+
+		post("/FollowMeSquawks", (req, res) -> {
+			System.out.println("run my Squawks");
+			SquawkUser user = req.session().attribute("user");
+			SquawkDB timeLineSquawk = new SquawkDB(); // db connection
+			Gson gson = new Gson();
+			// call db connection timeLineSquawk call method timeLineSquawks
+			// pass (uID)
+			String timelineJson = gson
+					.toJson(timeLineSquawk.FollowMe(user.userID));
+			timeLineSquawk.close();
+			System.out.println("send Gson");
+			return timelineJson;
+		});
+
+		get("/PopularSquawkers", (req, res) -> {
+			System.out.println("request made");
+			SquawkUser user = req.session().attribute("user");
+			if (user == null) {
+				res.redirect("/");
+				return "login";
+			}
+			JtwigTemplate template = JtwigTemplate
+					.classpathTemplate("/PopularSquawkers.html");
+			JtwigModel model = JtwigModel.newModel();
+			return template.render(model);
+		});
+
+		post("/SquawkerList", (req, res) -> {
+			System.out.println("Squawker List");
+			SquawkDB timeLineSquawk = new SquawkDB(); // db connection
+			Gson gson = new Gson();
+			// call db connection timeLineSquawk call method timeLineSquawks
+			// pass (uID)
+			String SquawkersJson = gson.toJson(timeLineSquawk.SquawkerList());
+			timeLineSquawk.close();
+			System.out.println("send Gson");
+			return SquawkersJson;
+		});
+
+		post("/Followers", (req, res) -> {
+			System.out.println("Tracking Followers");
+			SquawkDB followers = new SquawkDB();
+			String author = req.queryParams("FollowerID");
+			SquawkUser user = req.session().attribute("user");
+			followers.setFollow(user.userID, author);
+			System.out.println("send follower Gson");
+			followers.close();
+			return "";
+		});
+	}
 }
